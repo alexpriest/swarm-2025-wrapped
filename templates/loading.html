@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generating Your Wrapped... | Swarm Wrapped 2025</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📍</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #fffcf0;
+            --bg-secondary: #f5f2e6;
+            --accent: #CB6120;
+            --accent-hover: #a85019;
+            --text-primary: #100f0f;
+            --text-secondary: #57534e;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #100f0f;
+                --bg-secondary: #1a1918;
+                --accent: #da702c;
+                --accent-hover: #e8883a;
+                --text-primary: #fffcf0;
+                --text-secondary: #a8a29e;
+            }
+        }
+
+        body {
+            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .logo { font-size: 5rem; margin-bottom: 1rem; }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--bg-secondary);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .progress-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            max-width: 400px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+
+        .status-item.done { color: var(--accent); }
+        .status-item.pending { color: var(--text-secondary); }
+
+        .checkmark { font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+    <div class="logo">📍</div>
+    <div class="spinner"></div>
+    <h1>Generating Your Wrapped</h1>
+    <p class="subtitle">Fetching your 2025 check-ins from Swarm...</p>
+
+    <div class="status" id="status">
+        <div class="status-item pending" id="step1">
+            <span class="checkmark">⏳</span>
+            <span>Connecting to Foursquare...</span>
+        </div>
+        <div class="status-item pending" id="step2">
+            <span class="checkmark">⏳</span>
+            <span>Fetching check-ins...</span>
+        </div>
+        <div class="status-item pending" id="step3">
+            <span class="checkmark">⏳</span>
+            <span>Analyzing your year...</span>
+        </div>
+        <div class="status-item pending" id="step4">
+            <span class="checkmark">⏳</span>
+            <span>Building your report...</span>
+        </div>
+    </div>
+
+    <script>
+        async function generateWrapped() {
+            const steps = ['step1', 'step2', 'step3', 'step4'];
+
+            function markDone(stepId) {
+                const step = document.getElementById(stepId);
+                step.classList.remove('pending');
+                step.classList.add('done');
+                step.querySelector('.checkmark').textContent = '✓';
+            }
+
+            // Step 1: Connecting
+            await new Promise(r => setTimeout(r, 500));
+            markDone('step1');
+
+            // Step 2-4: Fetch and process
+            try {
+                markDone('step2');
+                const response = await fetch('/api/generate');
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate wrapped');
+                }
+
+                markDone('step3');
+                await new Promise(r => setTimeout(r, 300));
+                markDone('step4');
+
+                // Redirect to wrapped page
+                await new Promise(r => setTimeout(r, 500));
+                window.location.href = '/wrapped';
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.querySelector('.subtitle').textContent = 'Something went wrong. Please try again.';
+                document.querySelector('.spinner').style.display = 'none';
+            }
+        }
+
+        generateWrapped();
+    </script>
+</body>
+</html>
