@@ -6,6 +6,7 @@
     <title>Your Swarm 2025 Wrapped</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📍</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -226,6 +227,178 @@
         }
 
         .logout-link:hover { color: var(--accent); }
+
+        /* Share buttons */
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .share-btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .share-btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .share-btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .share-btn-secondary:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .share-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Share card (for image generation) */
+        .share-card {
+            width: 600px;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, #fffcf0 0%, #f5f2e6 100%);
+            border-radius: 24px;
+            font-family: 'Work Sans', sans-serif;
+            position: absolute;
+            left: -9999px;
+            top: 0;
+        }
+
+        .share-card-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .share-card-logo {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .share-card-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #CB6120;
+            margin-bottom: 0.25rem;
+        }
+
+        .share-card-subtitle {
+            font-size: 0.9rem;
+            color: #57534e;
+        }
+
+        .share-card-personality {
+            text-align: center;
+            padding: 1.25rem;
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .share-card-personality-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .share-card-personality-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #100f0f;
+        }
+
+        .share-card-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .share-card-stat {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .share-card-stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #CB6120;
+        }
+
+        .share-card-stat-label {
+            font-size: 0.7rem;
+            color: #57534e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .share-card-summary {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: #100f0f;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .share-card-footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #78716c;
+        }
+
+        .share-card-url {
+            color: #CB6120;
+            font-weight: 500;
+        }
+
+        .copy-feedback {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .copy-feedback.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -414,6 +587,80 @@
         </div>
         {% endif %}
 
+        <!-- Share Section -->
+        <div class="section" style="text-align: center;">
+            <h2>📤 Share Your Wrapped</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Show off your year in check-ins</p>
+            <div class="share-buttons">
+                <button class="share-btn share-btn-primary" onclick="copyStats()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Copy Stats
+                </button>
+                <button class="share-btn share-btn-secondary" onclick="downloadCard()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Download Image
+                </button>
+            </div>
+        </div>
+
+        <!-- Hidden Share Card for Image Generation -->
+        <div class="share-card" id="share-card">
+            <div class="share-card-header">
+                <div class="share-card-logo">📍</div>
+                <div class="share-card-title">Swarm 2025 Wrapped</div>
+                <div class="share-card-subtitle">My year in check-ins</div>
+            </div>
+
+            {% if stats.personality %}
+            <div class="share-card-personality">
+                <div class="share-card-personality-emoji">{{ stats.personality.emoji }}</div>
+                <div class="share-card-personality-name">{{ stats.personality.name }}</div>
+            </div>
+            {% endif %}
+
+            <div class="share-card-stats">
+                <div class="share-card-stat">
+                    <div class="share-card-stat-value">{{ stats.total_checkins }}</div>
+                    <div class="share-card-stat-label">Check-ins</div>
+                </div>
+                <div class="share-card-stat">
+                    <div class="share-card-stat-value">{{ stats.unique_venues }}</div>
+                    <div class="share-card-stat-label">Venues</div>
+                </div>
+                <div class="share-card-stat">
+                    <div class="share-card-stat-value">{{ stats.unique_cities }}</div>
+                    <div class="share-card-stat-label">Cities</div>
+                </div>
+                <div class="share-card-stat">
+                    <div class="share-card-stat-value">{{ stats.countries|length }}</div>
+                    <div class="share-card-stat-label">Countries</div>
+                </div>
+                <div class="share-card-stat">
+                    <div class="share-card-stat-value">{{ stats.longest_streak }}</div>
+                    <div class="share-card-stat-label">Day Streak</div>
+                </div>
+                <div class="share-card-stat">
+                    <div class="share-card-stat-value">{{ stats.days_active }}</div>
+                    <div class="share-card-stat-label">Days Active</div>
+                </div>
+            </div>
+
+            {% if stats.year_summary %}
+            <div class="share-card-summary">{{ stats.year_summary }}</div>
+            {% endif %}
+
+            <div class="share-card-footer">
+                Generate yours at <span class="share-card-url">swarm.alxprst.co</span>
+            </div>
+        </div>
+
+        <!-- Copy feedback toast -->
+        <div class="copy-feedback" id="copy-feedback">Copied to clipboard!</div>
+
         <footer>
             <p>Generated with <a href="https://github.com/alexpriest/swarm-mcp">Swarm Wrapped</a></p>
             <p style="margin-top: 0.5rem;">Your data is processed temporarily and never stored.</p>
@@ -514,6 +761,104 @@
 
         if (allLatLngs.length > 0) {
             map.fitBounds(allLatLngs, { padding: [30, 30] });
+        }
+
+        // Share functionality
+        const shareStats = {
+            totalCheckins: {{ stats.total_checkins }},
+            uniqueVenues: {{ stats.unique_venues }},
+            uniqueCities: {{ stats.unique_cities }},
+            countries: {{ stats.countries|length }},
+            longestStreak: {{ stats.longest_streak }},
+            daysActive: {{ stats.days_active }},
+            personality: {{ stats.personality|tojson|safe if stats.personality else 'null' }},
+            yearSummary: {{ stats.year_summary|tojson|safe if stats.year_summary else '""' }},
+            topVenue: {{ stats.top_venues[0]|tojson|safe if stats.top_venues else 'null' }},
+            timePersonality: {{ stats.time_personality|tojson|safe if stats.time_personality else '""' }}
+        };
+
+        function copyStats() {
+            const p = shareStats.personality;
+            const topVenue = shareStats.topVenue;
+
+            let text = `📍 My Swarm 2025 Wrapped\n\n`;
+
+            if (p) {
+                text += `${p.emoji} ${p.name}\n`;
+            }
+
+            if (shareStats.yearSummary) {
+                text += `"${shareStats.yearSummary}"\n\n`;
+            }
+
+            text += `📊 The Stats:\n`;
+            text += `• ${shareStats.totalCheckins.toLocaleString()} check-ins at ${shareStats.uniqueVenues.toLocaleString()} venues\n`;
+            text += `• ${shareStats.uniqueCities} cities across ${shareStats.countries} ${shareStats.countries === 1 ? 'country' : 'countries'}\n`;
+            text += `• 🔥 ${shareStats.longestStreak}-day streak\n`;
+            text += `• ${shareStats.daysActive} days active\n`;
+
+            if (topVenue) {
+                text += `• Top spot: ${topVenue.name} (${topVenue.count} visits)\n`;
+            }
+
+            text += `\nGenerate yours: swarm.alxprst.co`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showFeedback('Copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showFeedback('Copied to clipboard!');
+            });
+        }
+
+        function downloadCard() {
+            const card = document.getElementById('share-card');
+
+            // Temporarily move card into view for rendering
+            card.style.position = 'fixed';
+            card.style.left = '0';
+            card.style.top = '0';
+            card.style.zIndex = '-1';
+
+            html2canvas(card, {
+                scale: 2,
+                backgroundColor: '#fffcf0',
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                // Reset card position
+                card.style.position = 'absolute';
+                card.style.left = '-9999px';
+                card.style.zIndex = '';
+
+                // Download the image
+                const link = document.createElement('a');
+                link.download = 'swarm-wrapped-2025.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                showFeedback('Image downloaded!');
+            }).catch(err => {
+                console.error('Error generating image:', err);
+                card.style.position = 'absolute';
+                card.style.left = '-9999px';
+                showFeedback('Error generating image');
+            });
+        }
+
+        function showFeedback(message) {
+            const feedback = document.getElementById('copy-feedback');
+            feedback.textContent = message;
+            feedback.classList.add('show');
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
         }
     </script>
 </body>
