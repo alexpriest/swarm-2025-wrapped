@@ -14,19 +14,21 @@ PERSONALITY_TYPES = {
         "name": "The Coffee Connoisseur",
         "emoji": "☕",
         "description": "Your year was fueled by caffeine. Coffee shops were your go-to destination.",
-        "categories": ["Coffee Shop", "Café", "Tea Room", "Bakery"]
+        "categories": ["Coffee Shop", "Café", "Tea Room", "Bakery"],
+        "min_percentage": 0.15
     },
     "globe_trotter": {
         "name": "The Globe Trotter",
         "emoji": "🌍",
         "description": "You're a true explorer. Multiple countries and countless cities on your map.",
-        "threshold": {"countries": 3, "cities": 15}
+        "threshold": {"countries": 3, "cities": 30}
     },
     "foodie": {
         "name": "The Foodie",
         "emoji": "🍽️",
         "description": "Life's too short for bad food. Restaurants dominated your check-ins.",
-        "categories": ["Restaurant", "Food", "Diner", "Bistro", "Eatery"]
+        "categories": ["Restaurant", "Food", "Diner", "Bistro", "Eatery"],
+        "min_percentage": 0.20
     },
     "night_owl": {
         "name": "The Night Owl",
@@ -44,7 +46,8 @@ PERSONALITY_TYPES = {
         "name": "The Fitness Fanatic",
         "emoji": "💪",
         "description": "No excuses! Gyms and outdoor activities kept you moving.",
-        "categories": ["Gym", "Fitness", "Yoga", "Park", "Trail", "Pool"]
+        "categories": ["Gym", "Fitness", "Yoga", "Park", "Trail", "Pool"],
+        "min_percentage": 0.15
     },
     "social_butterfly": {
         "name": "The Social Butterfly",
@@ -58,6 +61,12 @@ PERSONALITY_TYPES = {
         "description": "Variety is the spice of life. You rarely visit the same place twice.",
         "threshold": {"unique_ratio": 0.7}
     },
+    "the_regular": {
+        "name": "The Regular",
+        "emoji": "🪑",
+        "description": "You've got your spots. The staff knows your order and your name.",
+        "threshold": {"low_unique_ratio": 0.35}
+    },
     "homebody": {
         "name": "The Homebody",
         "emoji": "🏠",
@@ -68,7 +77,8 @@ PERSONALITY_TYPES = {
         "name": "The Jet Setter",
         "emoji": "✈️",
         "description": "Always on the move! Airports are practically your second home.",
-        "categories": ["Airport", "Plane", "Terminal"]
+        "categories": ["Airport", "Plane", "Terminal"],
+        "min_percentage": 0.10
     }
 }
 
@@ -486,23 +496,31 @@ def determine_personality(stats, category_counts, city_counts):
     if total_checkins == 0:
         return PERSONALITY_TYPES["adventurer"]  # Default
 
+    # Calculate unique venue ratio once (used by multiple types)
+    unique_ratio = stats.get("unique_venues", 0) / total_checkins if total_checkins else 0
+
     # Score each personality type
     for type_id, type_info in PERSONALITY_TYPES.items():
         score = 0
 
-        # Category-based scoring
+        # Category-based scoring (with minimum percentage threshold)
         if "categories" in type_info:
             category_checkins = sum(
                 category_counts.get(cat, 0)
                 for cat in category_counts.keys()
                 if any(keyword.lower() in cat.lower() for keyword in type_info["categories"])
             )
-            score = category_checkins / total_checkins if total_checkins else 0
+            pct = category_checkins / total_checkins if total_checkins else 0
+            min_pct = type_info.get("min_percentage", 0)
+            # Only score if meets minimum percentage threshold
+            if pct >= min_pct:
+                score = pct
 
         # Threshold-based scoring
         elif "threshold" in type_info:
             threshold = type_info["threshold"]
             if "countries" in threshold:
+                # Globe trotter: 3+ countries OR 30+ cities
                 if len(stats.get("countries", [])) >= threshold["countries"]:
                     score = 0.8
                 if stats.get("unique_cities", 0) >= threshold.get("cities", 0):
@@ -511,9 +529,14 @@ def determine_personality(stats, category_counts, city_counts):
                 if stats.get("friend_percentage", 0) >= threshold["friend_percentage"]:
                     score = stats["friend_percentage"] / 100
             elif "unique_ratio" in threshold:
-                ratio = stats.get("unique_venues", 0) / total_checkins if total_checkins else 0
-                if ratio >= threshold["unique_ratio"]:
-                    score = ratio
+                # Adventurer: high unique ratio (lots of new places)
+                if unique_ratio >= threshold["unique_ratio"]:
+                    score = unique_ratio
+            elif "low_unique_ratio" in threshold:
+                # The Regular: low unique ratio (frequents same spots)
+                if unique_ratio <= threshold["low_unique_ratio"]:
+                    # Score inversely - lower ratio = higher score
+                    score = 1 - unique_ratio
             elif "home_city_percentage" in threshold:
                 if city_counts:
                     home_count = city_counts.most_common(1)[0][1]
