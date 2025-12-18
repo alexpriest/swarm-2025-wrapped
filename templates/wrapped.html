@@ -228,15 +228,15 @@
 
         .logout-link:hover { color: var(--accent); }
 
-        /* Share buttons */
-        .share-buttons {
+        /* Export buttons (named to avoid content blockers) */
+        .export-actions {
             display: flex;
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
         }
 
-        .share-btn {
+        .action-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
@@ -250,34 +250,34 @@
             font-family: inherit;
         }
 
-        .share-btn-primary {
+        .action-btn-primary {
             background: var(--accent);
             color: white;
         }
 
-        .share-btn-primary:hover {
+        .action-btn-primary:hover {
             background: var(--accent-light);
             transform: translateY(-2px);
         }
 
-        .share-btn-secondary {
+        .action-btn-secondary {
             background: var(--bg-card);
             color: var(--text-primary);
             border: 1px solid var(--border);
         }
 
-        .share-btn-secondary:hover {
+        .action-btn-secondary:hover {
             border-color: var(--accent);
             transform: translateY(-2px);
         }
 
-        .share-btn svg {
+        .action-btn svg {
             width: 18px;
             height: 18px;
         }
 
-        /* Share card (for image generation) */
-        .share-card {
+        /* Export card (for image generation) */
+        .export-card {
             width: 600px;
             padding: 2.5rem;
             background: linear-gradient(135deg, #fffcf0 0%, #f5f2e6 100%);
@@ -288,29 +288,29 @@
             top: 0;
         }
 
-        .share-card-header {
+        .export-card-header {
             text-align: center;
             margin-bottom: 1.5rem;
         }
 
-        .share-card-logo {
+        .export-card-logo {
             font-size: 3rem;
             margin-bottom: 0.5rem;
         }
 
-        .share-card-title {
+        .export-card-title {
             font-size: 1.75rem;
             font-weight: 600;
             color: #CB6120;
             margin-bottom: 0.25rem;
         }
 
-        .share-card-subtitle {
+        .export-card-subtitle {
             font-size: 0.9rem;
             color: #57534e;
         }
 
-        .share-card-personality {
+        .export-card-personality {
             text-align: center;
             padding: 1.25rem;
             background: white;
@@ -319,25 +319,25 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .share-card-personality-emoji {
+        .export-card-personality-emoji {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
         }
 
-        .share-card-personality-name {
+        .export-card-personality-name {
             font-size: 1.1rem;
             font-weight: 600;
             color: #100f0f;
         }
 
-        .share-card-stats {
+        .export-card-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 0.75rem;
             margin-bottom: 1.25rem;
         }
 
-        .share-card-stat {
+        .export-card-stat {
             background: white;
             padding: 1rem;
             border-radius: 12px;
@@ -345,20 +345,20 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .share-card-stat-value {
+        .export-card-stat-value {
             font-size: 1.5rem;
             font-weight: 600;
             color: #CB6120;
         }
 
-        .share-card-stat-label {
+        .export-card-stat-label {
             font-size: 0.7rem;
             color: #57534e;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .share-card-summary {
+        .export-card-summary {
             text-align: center;
             padding: 1rem;
             background: white;
@@ -370,13 +370,13 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .share-card-footer {
+        .export-card-footer {
             text-align: center;
             font-size: 0.8rem;
             color: #78716c;
         }
 
-        .share-card-url {
+        .export-card-url {
             color: #CB6120;
             font-weight: 500;
         }
@@ -587,18 +587,18 @@
         </div>
         {% endif %}
 
-        <!-- Share Section -->
+        <!-- Export Section -->
         <div class="section" style="text-align: center;">
-            <h2>📤 Share Your Wrapped</h2>
+            <h2>📤 Save Your Wrapped</h2>
             <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Show off your year in check-ins</p>
-            <div class="share-buttons">
-                <button class="share-btn share-btn-primary" onclick="copyStats()">
+            <div class="export-actions">
+                <button class="action-btn action-btn-primary" onclick="copyStats()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                     Copy Stats
                 </button>
-                <button class="share-btn share-btn-secondary" onclick="downloadCard()">
+                <button class="action-btn action-btn-secondary" onclick="downloadCard()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
@@ -607,54 +607,54 @@
             </div>
         </div>
 
-        <!-- Hidden Share Card for Image Generation -->
-        <div class="share-card" id="share-card">
-            <div class="share-card-header">
-                <div class="share-card-logo">📍</div>
-                <div class="share-card-title">Swarm 2025 Wrapped</div>
-                <div class="share-card-subtitle">My year in check-ins</div>
+        <!-- Hidden Export Card for Image Generation -->
+        <div class="export-card" id="export-card">
+            <div class="export-card-header">
+                <div class="export-card-logo">📍</div>
+                <div class="export-card-title">Swarm 2025 Wrapped</div>
+                <div class="export-card-subtitle">My year in check-ins</div>
             </div>
 
             {% if stats.personality %}
-            <div class="share-card-personality">
-                <div class="share-card-personality-emoji">{{ stats.personality.emoji }}</div>
-                <div class="share-card-personality-name">{{ stats.personality.name }}</div>
+            <div class="export-card-personality">
+                <div class="export-card-personality-emoji">{{ stats.personality.emoji }}</div>
+                <div class="export-card-personality-name">{{ stats.personality.name }}</div>
             </div>
             {% endif %}
 
-            <div class="share-card-stats">
-                <div class="share-card-stat">
-                    <div class="share-card-stat-value">{{ stats.total_checkins }}</div>
-                    <div class="share-card-stat-label">Check-ins</div>
+            <div class="export-card-stats">
+                <div class="export-card-stat">
+                    <div class="export-card-stat-value">{{ stats.total_checkins }}</div>
+                    <div class="export-card-stat-label">Check-ins</div>
                 </div>
-                <div class="share-card-stat">
-                    <div class="share-card-stat-value">{{ stats.unique_venues }}</div>
-                    <div class="share-card-stat-label">Venues</div>
+                <div class="export-card-stat">
+                    <div class="export-card-stat-value">{{ stats.unique_venues }}</div>
+                    <div class="export-card-stat-label">Venues</div>
                 </div>
-                <div class="share-card-stat">
-                    <div class="share-card-stat-value">{{ stats.unique_cities }}</div>
-                    <div class="share-card-stat-label">Cities</div>
+                <div class="export-card-stat">
+                    <div class="export-card-stat-value">{{ stats.unique_cities }}</div>
+                    <div class="export-card-stat-label">Cities</div>
                 </div>
-                <div class="share-card-stat">
-                    <div class="share-card-stat-value">{{ stats.countries|length }}</div>
-                    <div class="share-card-stat-label">Countries</div>
+                <div class="export-card-stat">
+                    <div class="export-card-stat-value">{{ stats.countries|length }}</div>
+                    <div class="export-card-stat-label">Countries</div>
                 </div>
-                <div class="share-card-stat">
-                    <div class="share-card-stat-value">{{ stats.longest_streak }}</div>
-                    <div class="share-card-stat-label">Day Streak</div>
+                <div class="export-card-stat">
+                    <div class="export-card-stat-value">{{ stats.longest_streak }}</div>
+                    <div class="export-card-stat-label">Day Streak</div>
                 </div>
-                <div class="share-card-stat">
-                    <div class="share-card-stat-value">{{ stats.days_active }}</div>
-                    <div class="share-card-stat-label">Days Active</div>
+                <div class="export-card-stat">
+                    <div class="export-card-stat-value">{{ stats.days_active }}</div>
+                    <div class="export-card-stat-label">Days Active</div>
                 </div>
             </div>
 
             {% if stats.year_summary %}
-            <div class="share-card-summary">{{ stats.year_summary }}</div>
+            <div class="export-card-summary">{{ stats.year_summary }}</div>
             {% endif %}
 
-            <div class="share-card-footer">
-                Generate yours at <span class="share-card-url">swarm.alxprst.co</span>
+            <div class="export-card-footer">
+                Generate yours at <span class="export-card-url">swarm.alxprst.co</span>
             </div>
         </div>
 
@@ -818,7 +818,7 @@
         }
 
         function downloadCard() {
-            const card = document.getElementById('share-card');
+            const card = document.getElementById('export-card');
 
             // Temporarily move card into view for rendering
             card.style.position = 'fixed';

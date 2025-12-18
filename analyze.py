@@ -543,66 +543,130 @@ def determine_personality(stats, category_counts, city_counts):
 
 def generate_year_summary(stats, category_counts, city_counts):
     """Generate a personalized year-in-a-sentence summary."""
+
+    # Category keyword mappings - map Foursquare categories to simple words
+    CATEGORY_KEYWORDS = {
+        # Food & Drink
+        "coffee": "coffee",
+        "café": "coffee",
+        "cafe": "coffee",
+        "tea": "coffee",
+        "restaurant": "good food",
+        "food": "good food",
+        "diner": "good food",
+        "bistro": "good food",
+        "eatery": "good food",
+        "bakery": "good food",
+        "pizza": "good food",
+        "burger": "good food",
+        "sushi": "good food",
+        "taco": "good food",
+        "bar": "nights out",
+        "pub": "nights out",
+        "brewery": "craft beer",
+        "winery": "wine",
+        "cocktail": "nights out",
+        # Activities
+        "gym": "fitness",
+        "fitness": "fitness",
+        "yoga": "wellness",
+        "spa": "wellness",
+        "park": "the outdoors",
+        "trail": "the outdoors",
+        "beach": "the outdoors",
+        "garden": "the outdoors",
+        "hotel": "travel",
+        "airport": "travel",
+        "train": "travel",
+        "shop": "shopping",
+        "store": "shopping",
+        "mall": "shopping",
+        "market": "shopping",
+        "grocery": "errands",
+        "theater": "entertainment",
+        "cinema": "movies",
+        "movie": "movies",
+        "museum": "culture",
+        "gallery": "culture",
+        "concert": "live music",
+        "music venue": "live music",
+        "office": "work",
+        "coworking": "work",
+    }
+
+    # Categories to skip entirely (too specific or awkward)
+    SKIP_CATEGORIES = [
+        "spiritual", "church", "religious", "school", "education",
+        "bank", "atm", "gas", "parking", "automotive", "medical",
+        "doctor", "dentist", "hospital", "pharmacy", "laundry",
+        "dry cleaner", "post office", "government"
+    ]
+
+    # Build category words from top categories
+    cat_words = []
+    for cat, _ in category_counts.most_common(6):  # Check more to find good ones
+        cat_lower = cat.lower()
+
+        # Skip awkward categories
+        if any(skip in cat_lower for skip in SKIP_CATEGORIES):
+            continue
+
+        # Find matching keyword
+        matched = False
+        for keyword, replacement in CATEGORY_KEYWORDS.items():
+            if keyword in cat_lower:
+                if replacement not in cat_words:  # Avoid duplicates
+                    cat_words.append(replacement)
+                matched = True
+                break
+
+        if len(cat_words) >= 2:  # Only need 2 good category words
+            break
+
+    # Build the sentence more naturally
     parts = []
 
-    # Top categories (keywords)
-    top_cats = category_counts.most_common(3)
-    if top_cats:
-        cat_words = []
-        for cat, _ in top_cats:
-            # Simplify category names
-            cat_lower = cat.lower()
-            if "coffee" in cat_lower:
-                cat_words.append("coffee")
-            elif "restaurant" in cat_lower or "food" in cat_lower:
-                cat_words.append("good food")
-            elif "gym" in cat_lower or "fitness" in cat_lower:
-                cat_words.append("fitness")
-            elif "bar" in cat_lower:
-                cat_words.append("nightlife")
-            elif "airport" in cat_lower:
-                cat_words.append("travel")
-            elif "park" in cat_lower or "trail" in cat_lower:
-                cat_words.append("nature")
-            elif "shop" in cat_lower or "store" in cat_lower:
-                cat_words.append("shopping")
-            else:
-                cat_words.append(cat.lower())
+    # Opening with categories
+    if cat_words:
+        parts.append(f"A year of {' and '.join(cat_words)}")
+    else:
+        parts.append(f"A year of {stats.get('total_checkins', 0)} check-ins")
 
-        cat_words = list(dict.fromkeys(cat_words))[:3]  # Dedupe and limit
-        if cat_words:
-            parts.append(f"A year of {', '.join(cat_words)}")
-
-    # Home city and travel
+    # Location context
     if city_counts:
-        home_city = city_counts.most_common(1)[0][0].split(",")[0]
-        other_cities = [c[0].split(",")[0] for c in city_counts.most_common(4)[1:] if c[0] != home_city]
+        home_city = city_counts.most_common(1)[0][0].split(",")[0].strip()
+        other_cities = [
+            c[0].split(",")[0].strip()
+            for c in city_counts.most_common(4)[1:]
+            if c[0].split(",")[0].strip() != home_city
+        ]
 
         if other_cities:
-            travel_str = f"in {home_city}, with trips to {' and '.join(other_cities[:2])}"
-            parts.append(travel_str)
+            if len(other_cities) == 1:
+                parts.append(f"based in {home_city} with adventures in {other_cities[0]}")
+            else:
+                parts.append(f"based in {home_city} with adventures in {other_cities[0]} and {other_cities[1]}")
         else:
             parts.append(f"exploring {home_city}")
 
-    # Streak highlight
+    # Pick ONE highlight (streak OR social, not both)
     streak = stats.get("longest_streak", 0)
+    friend_pct = stats.get("friend_percentage", 0)
+
     if streak >= 30:
         parts.append(f"fueled by a {streak}-day streak")
-    elif streak >= 14:
-        parts.append(f"with {streak} days of momentum")
+    elif friend_pct >= 60:
+        parts.append("shared with loved ones")
+    elif friend_pct <= 25 and stats.get("solo_checkins", 0) > 50:
+        parts.append("often flying solo")
 
-    # Friend highlight
-    friend_pct = stats.get("friend_percentage", 0)
-    if friend_pct >= 60:
-        parts.append("mostly with loved ones by your side")
-    elif friend_pct <= 30:
-        parts.append("embracing solo adventures")
-
-    if parts:
-        summary = " — ".join(parts) + "."
-        return summary[0].upper() + summary[1:]  # Capitalize first letter
-
-    return f"A year of {stats.get('total_checkins', 0)} check-ins and {stats.get('unique_venues', 0)} unique discoveries."
+    # Join with commas for cleaner flow, period at end
+    if len(parts) == 1:
+        return parts[0] + "."
+    elif len(parts) == 2:
+        return f"{parts[0]}, {parts[1]}."
+    else:
+        return f"{parts[0]}, {parts[1]}, {parts[2]}."
 
 
 def calculate_longest_streak(sorted_dates: list) -> int:
