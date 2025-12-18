@@ -64,7 +64,18 @@ Visit `http://localhost:8000` and connect your Swarm account!
 
 ## Deployment
 
-This app can be deployed to Vercel, Railway, or any Python hosting platform.
+### Deploy to Railway (Recommended)
+
+1. Go to [railway.app](https://railway.app) and sign in with GitHub
+2. Click **New Project** → **Deploy from GitHub repo**
+3. Select `alexpriest/swarm-wrapped-app`
+4. Once deployed, go to your project's **Variables** tab and add:
+   - `FOURSQUARE_CLIENT_ID` = your client ID
+   - `FOURSQUARE_CLIENT_SECRET` = your client secret
+   - `FOURSQUARE_REDIRECT_URI` = `https://your-app.up.railway.app/callback`
+   - `SESSION_SECRET` = any random string
+5. Go to **Settings** → **Networking** → **Generate Domain** to get your public URL
+6. **Important**: Add your Railway URL + `/callback` to your Foursquare app's redirect URIs
 
 ### Environment Variables
 
