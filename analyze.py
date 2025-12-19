@@ -738,3 +738,84 @@ def calculate_longest_streak(sorted_dates: list) -> int:
             current_streak = 1
 
     return max_streak
+
+
+def analyze_historical_data(checkins: list) -> dict:
+    """
+    Analyze all historical check-ins and return year-by-year statistics.
+
+    Args:
+        checkins: List of ALL check-in objects from Foursquare API
+
+    Returns:
+        Dictionary with year-by-year stats and insights
+    """
+    if not checkins:
+        return {"years": [], "insights": {}}
+
+    # Group check-ins by year
+    years_data = defaultdict(lambda: {
+        "checkins": [],
+        "venues": Counter(),
+        "cities": Counter()
+    })
+
+    for checkin in checkins:
+        created_at = checkin.get("createdAt", 0)
+        checkin_tz = checkin.get("timeZoneOffset", 0)
+        dt_utc = datetime.utcfromtimestamp(created_at)
+        dt = dt_utc + timedelta(minutes=checkin_tz)
+        year = dt.year
+
+        venue = checkin.get("venue", {})
+        venue_name = venue.get("name", "Unknown")
+        location = venue.get("location", {})
+        city = location.get("city", "Unknown")
+
+        years_data[year]["checkins"].append(checkin)
+        years_data[year]["venues"][venue_name] += 1
+        years_data[year]["cities"][city] += 1
+
+    # Build year summaries
+    years = []
+    for year in sorted(years_data.keys()):
+        data = years_data[year]
+        top_venue = data["venues"].most_common(1)
+        top_city = data["cities"].most_common(1)
+
+        years.append({
+            "year": year,
+            "total": len(data["checkins"]),
+            "top_venue": top_venue[0][0] if top_venue else "Unknown",
+            "top_venue_count": top_venue[0][1] if top_venue else 0,
+            "top_city": top_city[0][0] if top_city else "Unknown",
+            "unique_venues": len(data["venues"])
+        })
+
+    # Calculate insights
+    insights = {}
+    if len(years) >= 2:
+        # Find best year
+        best_year = max(years, key=lambda y: y["total"])
+        insights["best_year"] = best_year["year"]
+        insights["best_year_total"] = best_year["total"]
+
+        # Year over year for 2025 vs 2024
+        y2025 = next((y for y in years if y["year"] == 2025), None)
+        y2024 = next((y for y in years if y["year"] == 2024), None)
+
+        if y2025 and y2024 and y2024["total"] > 0:
+            change = ((y2025["total"] - y2024["total"]) / y2024["total"]) * 100
+            insights["yoy_change"] = round(change, 1)
+            insights["yoy_direction"] = "up" if change > 0 else "down" if change < 0 else "same"
+
+    # Total lifetime stats
+    insights["total_lifetime_checkins"] = sum(y["total"] for y in years)
+    insights["years_active"] = len(years)
+    if years:
+        insights["first_year"] = years[0]["year"]
+
+    return {
+        "years": years,
+        "insights": insights
+    }
