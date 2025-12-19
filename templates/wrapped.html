@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if username %}{{ username }}'s{% else %}Your{% endif %} Swarm 2025 Wrapped</title>
+    <title>{% if username %}{{ username }}'s{% else %}Your{% endif %} Swarm 2025 wrapped</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📍</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -373,7 +373,7 @@
     <div class="container">
         <header>
             <div class="logo">📍</div>
-            <h1>Swarm 2025 Wrapped</h1>
+            <h1>Swarm 2025 wrapped</h1>
             <p class="subtitle">{% if username %}{{ username }}'s{% else %}Your{% endif %} year in check-ins</p>
         </header>
 
@@ -384,32 +384,32 @@
                 <div class="stat-card">
                     <div class="stat-emoji">📍</div>
                     <div class="stat-value">{{ stats.total_checkins }}</div>
-                    <div class="stat-label">Total Check-ins</div>
+                    <div class="stat-label">total check-ins</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-emoji">🏪</div>
                     <div class="stat-value">{{ stats.unique_venues }}</div>
-                    <div class="stat-label">Unique Venues</div>
+                    <div class="stat-label">unique venues</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-emoji">🌆</div>
                     <div class="stat-value">{{ stats.unique_cities }}</div>
-                    <div class="stat-label">Cities Visited</div>
+                    <div class="stat-label">cities visited</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-emoji">🌍</div>
                     <div class="stat-value">{{ stats.countries|length }}</div>
-                    <div class="stat-label">Countries</div>
+                    <div class="stat-label">countries</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-emoji">📅</div>
                     <div class="stat-value">{{ stats.days_active }}</div>
-                    <div class="stat-label">Days Active</div>
+                    <div class="stat-label">days active</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-emoji">📊</div>
                     <div class="stat-value">{{ stats.activity_percentage }}%</div>
-                    <div class="stat-label">Of 2025 Tracked</div>
+                    <div class="stat-label">of 2025 tracked</div>
                 </div>
             </div>
         </div>
@@ -511,7 +511,7 @@
                 {% if stats.one_time_venues %}
                 <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 1rem;">
                     <span style="font-size: 1.5rem;">🆕</span>
-                    <span>You visited <strong style="color: var(--accent);">{{ stats.one_time_venues }} venues</strong> only once, making up {{ stats.one_time_percentage }}% of your unique venues.</span>
+                    <span>You visited <strong style="color: var(--accent);">{{ stats.one_time_venues }} venues</strong> only once. New discoveries!</span>
                 </div>
                 {% endif %}
 
@@ -548,7 +548,7 @@
 
         <!-- Export Section -->
         <div class="section" style="text-align: center;">
-            <h2>📤 Save your Wrapped</h2>
+            <h2>📤 Save your wrapped</h2>
             <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Show off your year in check-ins</p>
             <div class="export-actions">
                 <button class="action-btn action-btn-primary" onclick="copyStats()">
@@ -570,7 +570,7 @@
         <div class="export-card" id="export-card">
             <div class="export-card-header">
                 <div class="export-card-logo">📍</div>
-                <div class="export-card-title">Swarm 2025 Wrapped</div>
+                <div class="export-card-title">Swarm 2025 wrapped</div>
                 <div class="export-card-subtitle">My year in check-ins</div>
             </div>
 
@@ -584,27 +584,27 @@
             <div class="export-card-stats">
                 <div class="export-card-stat">
                     <div class="export-card-stat-value">{{ stats.total_checkins }}</div>
-                    <div class="export-card-stat-label">Check-ins</div>
+                    <div class="export-card-stat-label">check-ins</div>
                 </div>
                 <div class="export-card-stat">
                     <div class="export-card-stat-value">{{ stats.unique_venues }}</div>
-                    <div class="export-card-stat-label">Venues</div>
+                    <div class="export-card-stat-label">venues</div>
                 </div>
                 <div class="export-card-stat">
                     <div class="export-card-stat-value">{{ stats.unique_cities }}</div>
-                    <div class="export-card-stat-label">Cities</div>
+                    <div class="export-card-stat-label">cities</div>
                 </div>
                 <div class="export-card-stat">
                     <div class="export-card-stat-value">{{ stats.countries|length }}</div>
-                    <div class="export-card-stat-label">Countries</div>
+                    <div class="export-card-stat-label">countries</div>
                 </div>
                 <div class="export-card-stat">
                     <div class="export-card-stat-value">{{ stats.longest_streak }}</div>
-                    <div class="export-card-stat-label">Day Streak</div>
+                    <div class="export-card-stat-label">day streak</div>
                 </div>
                 <div class="export-card-stat">
                     <div class="export-card-stat-value">{{ stats.days_active }}</div>
-                    <div class="export-card-stat-label">Days Active</div>
+                    <div class="export-card-stat-label">days active</div>
                 </div>
             </div>
 
@@ -617,7 +617,7 @@
         <div class="copy-feedback" id="copy-feedback">Copied to clipboard!</div>
 
         <footer>
-            <p>Generated with <a href="https://github.com/alexpriest/swarm-mcp">Swarm Wrapped</a></p>
+            <p>Generated with <a href="https://github.com/alexpriest/swarm-wrapped-app">Swarm wrapped</a></p>
             <p style="margin-top: 0.5rem;">Your data is processed temporarily and never stored.</p>
 
             <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
@@ -744,7 +744,7 @@
             const p = shareStats.personality;
             const topVenue = shareStats.topVenue;
 
-            let text = `📍 My Swarm 2025 Wrapped\n\n`;
+            let text = `📍 My Swarm 2025 wrapped\n\n`;
 
             if (p) {
                 text += `${p.emoji} ${p.name}\n\n`;

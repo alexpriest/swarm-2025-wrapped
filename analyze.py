@@ -213,8 +213,9 @@ def analyze_checkins(checkins: list, exclude_sensitive: bool = False, tz_offset_
 
         # Time analysis - apply timezone offset
         created_at = checkin.get("createdAt", 0)
-        dt_utc = datetime.fromtimestamp(created_at)
-        # Apply timezone offset (tz_offset_minutes is offset from UTC)
+        # Use utcfromtimestamp to get actual UTC time (not server local time)
+        dt_utc = datetime.utcfromtimestamp(created_at)
+        # Apply user's timezone offset (e.g., -360 for UTC-6)
         dt = dt_utc + timedelta(minutes=tz_offset_minutes)
 
         hourly[dt.hour] += 1
@@ -388,8 +389,8 @@ def analyze_checkins(checkins: list, exclude_sensitive: bool = False, tz_offset_
         first_checkin = min(checkins, key=lambda x: x.get("createdAt", 0))
         last_checkin = max(checkins, key=lambda x: x.get("createdAt", 0))
 
-        first_dt_utc = datetime.fromtimestamp(first_checkin.get("createdAt", 0))
-        last_dt_utc = datetime.fromtimestamp(last_checkin.get("createdAt", 0))
+        first_dt_utc = datetime.utcfromtimestamp(first_checkin.get("createdAt", 0))
+        last_dt_utc = datetime.utcfromtimestamp(last_checkin.get("createdAt", 0))
         first_dt = first_dt_utc + timedelta(minutes=tz_offset_minutes)
         last_dt = last_dt_utc + timedelta(minutes=tz_offset_minutes)
 
