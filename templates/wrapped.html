@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Swarm 2025 Wrapped</title>
+    <title>{% if username %}{{ username }}'s{% else %}Your{% endif %} Swarm 2025 Wrapped</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📍</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -199,17 +199,6 @@
 
         .map-container { margin-top: 1rem; }
 
-        .personality-badge {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 500;
-            font-size: 1.1rem;
-            margin-top: 1rem;
-        }
-
         footer {
             text-align: center;
             padding: 2rem;
@@ -218,15 +207,6 @@
         }
 
         footer a { color: var(--accent); text-decoration: none; }
-
-        .logout-link {
-            display: inline-block;
-            margin-top: 1rem;
-            color: var(--text-muted);
-            text-decoration: none;
-        }
-
-        .logout-link:hover { color: var(--accent); }
 
         /* Export buttons (named to avoid content blockers) */
         .export-actions {
@@ -358,18 +338,6 @@
             letter-spacing: 0.5px;
         }
 
-        .export-card-summary {
-            text-align: center;
-            padding: 1rem;
-            background: white;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            color: #100f0f;
-            line-height: 1.5;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
         .export-card-footer {
             text-align: center;
             font-size: 0.8rem;
@@ -406,12 +374,12 @@
         <header>
             <div class="logo">📍</div>
             <h1>Swarm 2025 Wrapped</h1>
-            <p class="subtitle">Your year in check-ins</p>
+            <p class="subtitle">{% if username %}{{ username }}'s{% else %}Your{% endif %} year in check-ins</p>
         </header>
 
         <!-- Hero Stats -->
         <div class="section">
-            <h2>The Big Picture</h2>
+            <h2>The big picture</h2>
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-emoji">📍</div>
@@ -449,14 +417,14 @@
         <!-- Your Type -->
         {% if stats.personality %}
         <div class="section" style="text-align: center;">
-            <h2>{{ stats.personality.emoji }} You're {{ stats.personality.name }}</h2>
+            <h2>Your Swarm personality: {{ stats.personality.name }} {{ stats.personality.emoji }}</h2>
             <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">{{ stats.personality.description }}</p>
         </div>
         {% endif %}
 
         <!-- Streak -->
         <div class="section">
-            <h2>🔥 Longest Streak</h2>
+            <h2>🔥 Longest streak</h2>
             <div class="streak-highlight">
                 <div class="streak-number">{{ stats.longest_streak }}</div>
                 <div class="streak-label">consecutive days of check-ins</div>
@@ -465,7 +433,7 @@
 
         <!-- Top Venues -->
         <div class="section">
-            <h2>🏆 Your Top Venues</h2>
+            <h2>🏆 Your top venues</h2>
             <div class="venue-list">
                 {% for venue in stats.top_venues[:5] %}
                 <div class="venue-item">
@@ -482,18 +450,17 @@
 
         <!-- Top Categories -->
         <div class="section">
-            <h2>📂 Top Categories</h2>
+            <h2>📂 Top categories</h2>
             <div class="chart-container">
                 <canvas id="categoryChart"></canvas>
             </div>
         </div>
 
-        <!-- Time Personality -->
+        <!-- Your Swarm Chronotype -->
         <div class="section">
-            <h2>⏰ Your Time Personality</h2>
-            <div style="text-align: center;">
-                <p style="color: var(--text-secondary);">Based on when you check in most often, you're a...</p>
-                <div class="personality-badge">{{ stats.time_personality }}</div>
+            <h2>⏰ Your Swarm chronotype</h2>
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <p style="color: var(--text-secondary);">Based on when you check in most often, you're an <strong style="color: var(--accent);">{{ stats.time_personality }}</strong>.</p>
             </div>
             <div class="chart-container">
                 <canvas id="hourlyChart"></canvas>
@@ -503,7 +470,7 @@
         <!-- Top Friends -->
         {% if stats.top_friends %}
         <div class="section">
-            <h2>👥 Your Check-in Crew</h2>
+            <h2>👥 Your check-in crew</h2>
             <p style="color: var(--text-secondary); margin-bottom: 1rem;">You checked in with friends {{ stats.friend_percentage }}% of the time</p>
             <div class="friend-list">
                 {% for friend in stats.top_friends %}
@@ -518,7 +485,7 @@
 
         <!-- Insights -->
         <div class="section">
-            <h2>✨ Insights & Highlights</h2>
+            <h2>✨ Insights and highlights</h2>
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                 {% if stats.first_checkin %}
                 <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 1rem;">
@@ -530,7 +497,7 @@
                 {% if stats.furthest_venue %}
                 <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 1rem;">
                     <span style="font-size: 1.5rem;">🌍</span>
-                    <span>Furthest from home: <strong style="color: var(--accent);">{{ stats.furthest_venue.name }}</strong> in {{ stats.furthest_venue.city }}, {{ stats.furthest_venue.country }} — about {{ "{:,}".format(stats.furthest_venue.distance_miles) }} miles away.</span>
+                    <span>Furthest from home: <strong style="color: var(--accent);">{{ stats.furthest_venue.name }}</strong> in {{ stats.furthest_venue.city }}, {{ stats.furthest_venue.country }}, about {{ "{:,}".format(stats.furthest_venue.distance_miles) }} miles away.</span>
                 </div>
                 {% endif %}
 
@@ -544,28 +511,28 @@
                 {% if stats.one_time_venues %}
                 <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 1rem;">
                     <span style="font-size: 1.5rem;">🆕</span>
-                    <span><strong style="color: var(--accent);">{{ stats.one_time_venues }} venues</strong> you visited only once — that's {{ stats.one_time_percentage }}% unique discoveries.</span>
+                    <span>You visited <strong style="color: var(--accent);">{{ stats.one_time_venues }} venues</strong> only once, making up {{ stats.one_time_percentage }}% of your unique venues.</span>
                 </div>
                 {% endif %}
 
                 {% if stats.international_checkins > 0 %}
                 <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 1rem;">
                     <span style="font-size: 1.5rem;">✈️</span>
-                    <span><strong style="color: var(--accent);">{{ stats.international_checkins }} international check-ins</strong> ({{ stats.international_percentage }}% of your total).</span>
+                    <span><strong style="color: var(--accent);">{{ stats.international_checkins }} international check-ins</strong>, {{ stats.international_percentage }}% of your total.</span>
                 </div>
                 {% endif %}
 
                 {% if stats.solo_checkins %}
                 <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 1rem;">
                     <span style="font-size: 1.5rem;">🧍</span>
-                    <span><strong style="color: var(--accent);">{{ stats.solo_checkins }} solo check-ins</strong> ({{ stats.solo_percentage }}%) — sometimes you're flying solo.</span>
+                    <span><strong style="color: var(--accent);">{{ stats.solo_checkins }} solo check-ins</strong> ({{ stats.solo_percentage }}%). Sometimes you fly solo.</span>
                 </div>
                 {% endif %}
 
                 {% if stats.longest_gap_days and stats.longest_gap_days > 0 %}
                 <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 1rem;">
                     <span style="font-size: 1.5rem;">🧘</span>
-                    <span>Longest break between check-ins: <strong style="color: var(--accent);">{{ stats.longest_gap_days }} days</strong> — even explorers need rest.</span>
+                    <span>Longest break: <strong style="color: var(--accent);">{{ stats.longest_gap_days }} days</strong> between check-ins. Even explorers need rest.</span>
                 </div>
                 {% endif %}
             </div>
@@ -573,23 +540,15 @@
 
         <!-- Map -->
         <div class="section">
-            <h2>🗺️ Your Year on the Map</h2>
+            <h2>🗺️ Your year on the map</h2>
             <div class="map-container">
                 <div id="map"></div>
             </div>
         </div>
 
-        <!-- Year Summary -->
-        {% if stats.year_summary %}
-        <div class="section" style="text-align: center;">
-            <h2>🎬 Your 2025 in a Sentence</h2>
-            <p style="font-size: 1.25rem; max-width: 700px; margin: 1rem auto; line-height: 1.8; color: var(--text-primary);">{{ stats.year_summary }}</p>
-        </div>
-        {% endif %}
-
         <!-- Export Section -->
         <div class="section" style="text-align: center;">
-            <h2>📤 Save Your Wrapped</h2>
+            <h2>📤 Save your Wrapped</h2>
             <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Show off your year in check-ins</p>
             <div class="export-actions">
                 <button class="action-btn action-btn-primary" onclick="copyStats()">
@@ -649,10 +608,6 @@
                 </div>
             </div>
 
-            {% if stats.year_summary %}
-            <div class="export-card-summary">{{ stats.year_summary }}</div>
-            {% endif %}
-
             <div class="export-card-footer">
                 Generate yours at <span class="export-card-url">swarm.alxprst.co</span>
             </div>
@@ -665,26 +620,27 @@
             <p>Generated with <a href="https://github.com/alexpriest/swarm-mcp">Swarm Wrapped</a></p>
             <p style="margin-top: 0.5rem;">Your data is processed temporarily and never stored.</p>
 
-            <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; display: inline-block;">
-                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem;">
-                    <input type="checkbox" id="privacy-toggle" {% if exclude_sensitive %}checked{% endif %} style="width: 16px; height: 16px; accent-color: var(--accent);">
-                    <span>Exclude churches & schools</span>
-                </label>
+            <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                <div style="padding: 0.75rem 1rem; background: var(--bg-secondary); border-radius: 8px;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem;">
+                        <input type="checkbox" id="privacy-toggle" {% if exclude_sensitive %}checked{% endif %} style="width: 16px; height: 16px; accent-color: var(--accent);">
+                        <span>Exclude churches & schools</span>
+                    </label>
+                </div>
+                <a href="/logout" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">← Disconnect & Start Over</a>
             </div>
             <script>
                 document.getElementById('privacy-toggle').addEventListener('change', function() {
                     window.location.href = this.checked ? '/wrapped?exclude_sensitive=true' : '/wrapped';
                 });
             </script>
-
-            <a href="/logout" class="logout-link">← Disconnect & Start Over</a>
         </footer>
     </div>
 
     <script>
         // Category Chart
         const categoryData = {{ stats.top_categories|tojson|safe }};
-        new Chart(document.getElementById('categoryChart'), {
+        const categoryChart = new Chart(document.getElementById('categoryChart'), {
             type: 'bar',
             data: {
                 labels: categoryData.slice(0, 8).map(c => c.name),
@@ -696,6 +652,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: true,
                 plugins: { legend: { display: false } },
                 scales: {
                     y: { beginAtZero: true, grid: { color: 'var(--chart-grid)' } },
@@ -706,7 +663,7 @@
 
         // Hourly Chart
         const hourlyData = {{ stats.hourly_distribution|tojson|safe }};
-        new Chart(document.getElementById('hourlyChart'), {
+        const hourlyChart = new Chart(document.getElementById('hourlyChart'), {
             type: 'line',
             data: {
                 labels: Array.from({length: 24}, (_, i) => i === 0 ? '12am' : i < 12 ? `${i}am` : i === 12 ? '12pm' : `${i-12}pm`),
@@ -721,12 +678,19 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: true,
                 plugins: { legend: { display: false } },
                 scales: {
                     y: { beginAtZero: true, grid: { color: 'var(--chart-grid)' } },
                     x: { grid: { display: false } }
                 }
             }
+        });
+
+        // Fix chart resize on window expand
+        window.addEventListener('resize', function() {
+            categoryChart.resize();
+            hourlyChart.resize();
         });
 
         // Map
@@ -772,7 +736,6 @@
             longestStreak: {{ stats.longest_streak }},
             daysActive: {{ stats.days_active }},
             personality: {{ stats.personality|tojson|safe if stats.personality else 'null' }},
-            yearSummary: {{ stats.year_summary|tojson|safe if stats.year_summary else '""' }},
             topVenue: {{ stats.top_venues[0]|tojson|safe if stats.top_venues else 'null' }},
             timePersonality: {{ stats.time_personality|tojson|safe if stats.time_personality else '""' }}
         };
@@ -784,11 +747,7 @@
             let text = `📍 My Swarm 2025 Wrapped\n\n`;
 
             if (p) {
-                text += `${p.emoji} ${p.name}\n`;
-            }
-
-            if (shareStats.yearSummary) {
-                text += `"${shareStats.yearSummary}"\n\n`;
+                text += `${p.emoji} ${p.name}\n\n`;
             }
 
             text += `📊 The Stats:\n`;

@@ -91,13 +91,28 @@ SENSITIVE_CATEGORIES = [
 ]
 
 
-def analyze_checkins(checkins: list, exclude_sensitive: bool = False) -> dict:
+def ordinal(n: int) -> str:
+    """Return ordinal string for a number (1st, 2nd, 3rd, etc.)."""
+    if 11 <= (n % 100) <= 13:
+        suffix = 'th'
+    else:
+        suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')
+    return f"{n}{suffix}"
+
+
+def format_date_ordinal(dt: datetime) -> str:
+    """Format date as 'January 1st' style."""
+    return f"{dt.strftime('%B')} {ordinal(dt.day)}"
+
+
+def analyze_checkins(checkins: list, exclude_sensitive: bool = False, tz_offset_minutes: int = 0) -> dict:
     """
     Analyze a list of Foursquare check-ins and return statistics.
 
     Args:
         checkins: List of check-in objects from Foursquare API
         exclude_sensitive: If True, exclude churches and schools for privacy
+        tz_offset_minutes: Timezone offset in minutes from UTC (from user profile)
 
     Returns:
         Dictionary with all computed statistics
@@ -196,9 +211,11 @@ def analyze_checkins(checkins: list, exclude_sensitive: bool = False) -> dict:
         # Count countries
         country_counts[venue_info["country"]] += 1
 
-        # Time analysis
+        # Time analysis - apply timezone offset
         created_at = checkin.get("createdAt", 0)
-        dt = datetime.fromtimestamp(created_at)
+        dt_utc = datetime.fromtimestamp(created_at)
+        # Apply timezone offset (tz_offset_minutes is offset from UTC)
+        dt = dt_utc + timedelta(minutes=tz_offset_minutes)
 
         hourly[dt.hour] += 1
         daily[dt.strftime("%A")] += 1
@@ -310,9 +327,8 @@ def analyze_checkins(checkins: list, exclude_sensitive: bool = False) -> dict:
     # Busiest day
     if checkins_per_day:
         max_day = max(checkins_per_day, key=checkins_per_day.get)
-        # Format date nicely as "April 20" instead of "2025-04-20"
         max_day_dt = datetime.strptime(max_day, "%Y-%m-%d")
-        stats["max_checkins_day"] = max_day_dt.strftime("%B %d").replace(" 0", " ")  # "April 20"
+        stats["max_checkins_day"] = format_date_ordinal(max_day_dt)  # "April 20th"
         stats["max_checkins_count"] = checkins_per_day[max_day]
     else:
         stats["max_checkins_day"] = ""
@@ -372,18 +388,20 @@ def analyze_checkins(checkins: list, exclude_sensitive: bool = False) -> dict:
         first_checkin = min(checkins, key=lambda x: x.get("createdAt", 0))
         last_checkin = max(checkins, key=lambda x: x.get("createdAt", 0))
 
-        first_dt = datetime.fromtimestamp(first_checkin.get("createdAt", 0))
-        last_dt = datetime.fromtimestamp(last_checkin.get("createdAt", 0))
+        first_dt_utc = datetime.fromtimestamp(first_checkin.get("createdAt", 0))
+        last_dt_utc = datetime.fromtimestamp(last_checkin.get("createdAt", 0))
+        first_dt = first_dt_utc + timedelta(minutes=tz_offset_minutes)
+        last_dt = last_dt_utc + timedelta(minutes=tz_offset_minutes)
 
         stats["first_checkin"] = {
             "venue": first_checkin.get("venue", {}).get("name", "Unknown"),
-            "date": first_dt.strftime("%B %d, %Y"),
-            "time": first_dt.strftime("%I:%M %p")
+            "date": format_date_ordinal(first_dt),
+            "time": first_dt.strftime("%I:%M %p").lstrip("0")
         }
         stats["last_checkin"] = {
             "venue": last_checkin.get("venue", {}).get("name", "Unknown"),
-            "date": last_dt.strftime("%B %d, %Y"),
-            "time": last_dt.strftime("%I:%M %p")
+            "date": format_date_ordinal(last_dt),
+            "time": last_dt.strftime("%I:%M %p").lstrip("0")
         }
 
     # Map data (grouped by location)

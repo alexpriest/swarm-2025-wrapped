@@ -138,7 +138,8 @@ async def wrapped(request: Request, exclude_sensitive: bool = False):
     if not token:
         return RedirectResponse(url="/login")
 
-    # Fetch and analyze check-ins
+    # Fetch user profile and check-ins in parallel
+    user_profile = await fetch_user_profile(token)
     checkins = await fetch_all_checkins(token, year=2025)
 
     if not checkins:
@@ -147,12 +148,23 @@ async def wrapped(request: Request, exclude_sensitive: bool = False):
             "error": "No check-ins found for 2025"
         })
 
-    stats = analyze_checkins(checkins, exclude_sensitive=exclude_sensitive)
+    # Get timezone offset from user profile (in minutes)
+    tz_offset_minutes = user_profile.get("timeZoneOffset", 0) if user_profile else 0
+
+    stats = analyze_checkins(checkins, exclude_sensitive=exclude_sensitive, tz_offset_minutes=tz_offset_minutes)
+
+    # Get username for display
+    username = None
+    if user_profile:
+        first_name = user_profile.get("firstName", "")
+        last_name = user_profile.get("lastName", "")
+        username = f"{first_name} {last_name}".strip() or user_profile.get("handle", "")
 
     return templates.TemplateResponse("wrapped.html", {
         "request": request,
         "stats": stats,
-        "exclude_sensitive": exclude_sensitive
+        "exclude_sensitive": exclude_sensitive,
+        "username": username
     })
 
 
@@ -161,6 +173,24 @@ async def logout(request: Request):
     """Clear session and logout."""
     request.session.clear()
     return RedirectResponse(url="/")
+
+
+async def fetch_user_profile(token: str) -> dict:
+    """Fetch user profile from Foursquare API."""
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{FOURSQUARE_API_BASE}/users/self",
+            params={
+                "oauth_token": token,
+                "v": "20231201"
+            }
+        )
+
+        if response.status_code != 200:
+            return {}
+
+        data = response.json()
+        return data.get("response", {}).get("user", {})
 
 
 async def fetch_all_checkins(token: str, year: int = 2025) -> list:
