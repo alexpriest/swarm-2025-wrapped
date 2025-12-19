@@ -268,8 +268,8 @@ async def fetch_all_checkins_historical(token: str) -> list:
             checkins.extend(items)
             offset += limit
 
-            # Safety limit (20k check-ins max)
-            if offset > 20000:
+            # Safety limit (50k check-ins max)
+            if offset > 50000:
                 break
 
     return checkins
