@@ -42,6 +42,7 @@
                 --text-muted: #78716c;
                 --border: #333;
                 --chart-grid: rgba(255, 255, 255, 0.08);
+                --threads-icon-filter: invert(1);
             }
         }
 
@@ -748,16 +749,8 @@
                         </svg>
                         Copy Stats
                     </button>
-                    <button class="action-btn action-btn-secondary" onclick="shareToTwitter()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                        </svg>
-                        Share on X
-                    </button>
                     <button class="action-btn action-btn-secondary" onclick="shareToThreads()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.59 12c.025 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.798-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.96-.065-1.182.408-2.256 1.333-3.024.898-.746 2.132-1.17 3.474-1.194 1.09-.02 2.104.15 3.03.488-.015-1.138-.134-2.058-.397-2.74-.321-.827-.822-1.394-1.576-1.782-.825-.425-1.878-.617-3.22-.587l-.063-2.118c1.678-.05 3.065.217 4.125.794 1.028.56 1.78 1.387 2.236 2.46.395.93.6 2.028.64 3.424.89.455 1.662 1.01 2.296 1.66 1.15 1.18 1.775 2.657 1.855 4.391.085 1.878-.508 3.6-1.763 5.124C18.702 22.988 15.99 23.97 12.186 24zm-.09-7.873c-.882.027-1.573.27-2.001.704-.387.393-.548.878-.517 1.435.034.61.311 1.091.825 1.43.545.358 1.274.532 2.108.488 1.043-.056 1.833-.45 2.418-1.205.46-.594.762-1.382.896-2.336-.92-.322-1.945-.518-3.07-.518l-.66.002z"/>
-                        </svg>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/01/Threads_%28app%29.svg" alt="Threads" style="width: 18px; height: 18px; filter: var(--threads-icon-filter, none);">
                         Share on Threads
                     </button>
                 </div>
@@ -885,7 +878,7 @@
         <div class="copy-feedback" id="copy-feedback">Copied to clipboard!</div>
 
         <footer>
-            <p>Made with ❤️ in ATX by <a href="https://alexpriest.com">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest">Buy me a coffee ☕</a> · <span style="color: var(--text-muted);">v1.4.0</span></p>
+            <p>Made with ❤️ in ATX by <a href="https://alexpriest.com">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest">Buy me a coffee ☕</a> · <span style="color: var(--text-muted);">v1.4.1</span></p>
             <p style="margin-top: 0.5rem;">Your data is processed temporarily and never stored.</p>
 
             <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
@@ -1223,23 +1216,42 @@
         }
 
         // Social sharing
-        function shareToTwitter() {
-            const p = shareStats.personality;
-            let text = `📍 My Swarm 2025 Wrapped\n\n`;
-            if (p) text += `${p.emoji} ${p.name}\n\n`;
-            text += `${shareStats.totalCheckins.toLocaleString()} check-ins · ${shareStats.uniqueVenues.toLocaleString()} venues · ${shareStats.uniqueCities} cities\n\n`;
-            text += `Generate yours: swarm.alxprst.co`;
-
-            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank', 'width=550,height=420');
-        }
-
         function shareToThreads() {
-            const p = shareStats.personality;
-            let text = `📍 My Swarm 2025 Wrapped\n\n`;
-            if (p) text += `${p.emoji} ${p.name}\n\n`;
-            text += `${shareStats.totalCheckins.toLocaleString()} check-ins · ${shareStats.uniqueVenues.toLocaleString()} venues · ${shareStats.uniqueCities} cities\n\n`;
-            text += `Generate yours: swarm.alxprst.co`;
+            // Build engaging text without emojis (they show as ? on Threads)
+            let text = `My Swarm 2025 Wrapped\n\n`;
+
+            // Lead with the most impressive stat
+            text += `${shareStats.totalCheckins.toLocaleString()} check-ins this year`;
+
+            // Add venue exploration context
+            if (shareStats.uniqueVenues > 100) {
+                text += ` across ${shareStats.uniqueVenues.toLocaleString()} different venues`;
+            }
+            text += `.\n\n`;
+
+            // Geographic reach
+            if (shareStats.countries > 1) {
+                text += `${shareStats.uniqueCities} cities in ${shareStats.countries} countries. `;
+            } else {
+                text += `${shareStats.uniqueCities} cities explored. `;
+            }
+
+            // Streak if impressive
+            if (shareStats.longestStreak >= 7) {
+                text += `${shareStats.longestStreak}-day check-in streak. `;
+            }
+
+            // Top venue as a fun detail
+            if (shareStats.topVenue) {
+                text += `\n\nMost visited: ${shareStats.topVenue.name} (${shareStats.topVenue.count}x)`;
+            }
+
+            // Chronotype for personality flavor
+            if (shareStats.timePersonality) {
+                text += `\n\nApparently I'm a "${shareStats.timePersonality}"`;
+            }
+
+            text += `\n\nGenerate yours at swarm.alxprst.co`;
 
             const url = `https://threads.net/intent/post?text=${encodeURIComponent(text)}`;
             window.open(url, '_blank', 'width=550,height=420');
