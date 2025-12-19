@@ -146,7 +146,8 @@
             markDone('step4');
 
             await new Promise(r => setTimeout(r, 200));
-            window.location.href = '/wrapped';
+            // Preserve any query params (like exclude_sensitive)
+            window.location.href = '/wrapped' + window.location.search;
         }
 
         generateWrapped();

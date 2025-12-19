@@ -633,7 +633,7 @@
         <div class="copy-feedback" id="copy-feedback">Copied to clipboard!</div>
 
         <footer>
-            <p>Made with ❤️ in ATX by <a href="https://alexpriest.com">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest">Buy me a coffee ☕</a> · <span style="color: var(--text-muted);">v1.2.6</span></p>
+            <p>Made with ❤️ in ATX by <a href="https://alexpriest.com">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest">Buy me a coffee ☕</a> · <span style="color: var(--text-muted);">v1.2.7</span></p>
             <p style="margin-top: 0.5rem;">Your data is processed temporarily and never stored.</p>
 
             <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
@@ -660,6 +660,7 @@
         // Chart colors based on color scheme
         const accentColor = isDarkMode ? '#da702c' : '#CB6120';
         const accentColorAlpha = isDarkMode ? 'rgba(218, 112, 44, 0.1)' : 'rgba(203, 97, 32, 0.1)';
+        const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)';
 
         // Category Chart
         const categoryData = {{ stats.top_categories|tojson|safe }};
@@ -678,7 +679,7 @@
                 maintainAspectRatio: true,
                 plugins: { legend: { display: false } },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: 'var(--chart-grid)' } },
+                    y: { beginAtZero: true, grid: { color: gridColor } },
                     x: { grid: { display: false } }
                 }
             }
@@ -704,7 +705,7 @@
                 maintainAspectRatio: true,
                 plugins: { legend: { display: false } },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: 'var(--chart-grid)' } },
+                    y: { beginAtZero: true, grid: { color: gridColor } },
                     x: { grid: { display: false } }
                 }
             }
