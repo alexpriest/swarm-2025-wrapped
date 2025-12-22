@@ -22,44 +22,53 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg-primary: #fffcf0;
-            --bg-secondary: #f5f2e6;
+            /* Foursquare brand colors */
+            --fs-blue: #0cbadf;
+            --fs-green: #8fd400;
+            --fs-orange: #ff7900;
+            --fs-yellow: #ffcb00;
+            --fs-gray: #d1d4d3;
+
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f7f7;
             --bg-card: #ffffff;
-            --accent: #CB6120;
-            --accent-light: #e07830;
-            --accent-glow: rgba(203, 97, 32, 0.15);
-            --text-primary: #100f0f;
-            --text-secondary: #57534e;
-            --text-muted: #78716c;
-            --border: #e5e2d9;
+            --accent: #0cbadf;
+            --accent-light: #3dc9e8;
+            --accent-glow: rgba(12, 186, 223, 0.15);
+            --accent-secondary: #ff7900;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --text-muted: #888888;
+            --border: #e0e0e0;
             --chart-grid: rgba(0, 0, 0, 0.06);
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-primary: #100f0f;
-                --bg-secondary: #1a1918;
-                --bg-card: #242220;
-                --accent: #da702c;
-                --accent-light: #e8883a;
-                --accent-glow: rgba(218, 112, 44, 0.2);
-                --text-primary: #fffcf0;
-                --text-secondary: #a8a29e;
-                --text-muted: #78716c;
-                --border: #333;
+                --bg-primary: #1a1a1a;
+                --bg-secondary: #252525;
+                --bg-card: #2a2a2a;
+                --accent: #0cbadf;
+                --accent-light: #3dc9e8;
+                --accent-glow: rgba(12, 186, 223, 0.2);
+                --accent-secondary: #ff7900;
+                --text-primary: #ffffff;
+                --text-secondary: #b0b0b0;
+                --text-muted: #808080;
+                --border: #404040;
                 --chart-grid: rgba(255, 255, 255, 0.08);
                 --threads-icon-filter: invert(1);
             }
         }
 
         body {
-            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-weight: 300;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 400;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
@@ -78,16 +87,20 @@
 
         h1 {
             font-size: 3rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--accent);
             margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
         }
 
         h2 {
             font-size: 1.25rem;
-            font-weight: 500;
+            font-weight: 700;
             margin-bottom: 1.5rem;
             color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .subtitle {
@@ -283,9 +296,9 @@
         .export-card {
             width: 600px;
             padding: 2.5rem;
-            background: linear-gradient(135deg, #fffcf0 0%, #f5f2e6 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f5f7f7 100%);
             border-radius: 24px;
-            font-family: 'Work Sans', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             position: absolute;
             left: -9999px;
             top: 0;
@@ -303,14 +316,15 @@
 
         .export-card-title {
             font-size: 1.75rem;
-            font-weight: 600;
-            color: #CB6120;
+            font-weight: 700;
+            color: #0cbadf;
             margin-bottom: 0.25rem;
+            text-transform: uppercase;
         }
 
         .export-card-subtitle {
             font-size: 0.9rem;
-            color: #57534e;
+            color: #555555;
         }
 
         .export-card-personality {
@@ -329,8 +343,8 @@
 
         .export-card-personality-name {
             font-size: 1.1rem;
-            font-weight: 600;
-            color: #100f0f;
+            font-weight: 700;
+            color: #1a1a1a;
         }
 
         .export-card-stats {
@@ -350,13 +364,13 @@
 
         .export-card-stat-value {
             font-size: 1.5rem;
-            font-weight: 600;
-            color: #CB6120;
+            font-weight: 700;
+            color: #0cbadf;
         }
 
         .export-card-stat-label {
             font-size: 0.7rem;
-            color: #57534e;
+            color: #555555;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -366,55 +380,55 @@
             border-radius: 12px;
             margin-bottom: 1rem;
             overflow: hidden;
-            background: #e8e5d9;
+            background: #e0e0e0;
         }
 
         .export-card-footer {
             text-align: center;
             font-size: 0.8rem;
-            color: #78716c;
+            color: #888888;
         }
 
         .export-card-url {
-            color: #CB6120;
-            font-weight: 500;
+            color: #0cbadf;
+            font-weight: 700;
         }
 
         @media (prefers-color-scheme: dark) {
             .export-card {
-                background: linear-gradient(135deg, #100f0f 0%, #1a1918 100%);
+                background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
             }
             .export-card-title {
-                color: #da702c;
+                color: #0cbadf;
             }
             .export-card-subtitle {
-                color: #a8a29e;
+                color: #b0b0b0;
             }
             .export-card-personality {
-                background: #242220;
+                background: #2a2a2a;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.3);
             }
             .export-card-personality-name {
-                color: #fffcf0;
+                color: #ffffff;
             }
             .export-card-stat {
-                background: #242220;
+                background: #2a2a2a;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.3);
             }
             .export-card-stat-value {
-                color: #da702c;
+                color: #0cbadf;
             }
             .export-card-stat-label {
-                color: #a8a29e;
+                color: #b0b0b0;
             }
             .export-card-map {
-                background: #1a1918 !important;
+                background: #252525 !important;
             }
             .export-card-footer {
-                color: #78716c;
+                color: #808080;
             }
             .export-card-url {
-                color: #da702c;
+                color: #0cbadf;
             }
         }
 
@@ -422,9 +436,9 @@
         .share-card {
             width: 600px;
             padding: 2rem;
-            background: linear-gradient(135deg, #fffcf0 0%, #f5f2e6 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f5f7f7 100%);
             border-radius: 24px;
-            font-family: 'Work Sans', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             position: absolute;
             left: -9999px;
             top: 0;
@@ -442,8 +456,9 @@
 
         .share-card-title {
             font-size: 1.5rem;
-            font-weight: 600;
-            color: #CB6120;
+            font-weight: 700;
+            color: #0cbadf;
+            text-transform: uppercase;
         }
 
         .share-card-map {
@@ -451,7 +466,7 @@
             border-radius: 16px;
             margin-bottom: 1.25rem;
             overflow: hidden;
-            background: #e8e5d9;
+            background: #e0e0e0;
         }
 
         .share-card-footer {
@@ -460,22 +475,22 @@
 
         .share-card-url {
             font-size: 1rem;
-            color: #CB6120;
-            font-weight: 500;
+            color: #0cbadf;
+            font-weight: 700;
         }
 
         @media (prefers-color-scheme: dark) {
             .share-card {
-                background: linear-gradient(135deg, #100f0f 0%, #1a1918 100%);
+                background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
             }
             .share-card-title {
-                color: #da702c;
+                color: #0cbadf;
             }
             .share-card-map {
-                background: #1a1918;
+                background: #252525;
             }
             .share-card-url {
-                color: #da702c;
+                color: #0cbadf;
             }
         }
 
@@ -847,7 +862,7 @@
         <div class="copy-feedback" id="copy-feedback">Copied to clipboard!</div>
 
         <footer>
-            <p>Made with ❤️ in ATX by <a href="https://alexpriest.com" target="_blank" rel="noopener">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest" target="_blank" rel="noopener">Buy me a coffee ☕</a> · <span style="color: var(--text-muted);">v1.5.0</span></p>
+            <p>Made with ❤️ in ATX by <a href="https://alexpriest.com" target="_blank" rel="noopener">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest" target="_blank" rel="noopener">Buy me a coffee ☕</a> · <span style="color: var(--text-muted);">v1.6.0</span></p>
             <p style="margin-top: 0.5rem;">Built with <a href="https://claude.com/product/claude-code" target="_blank" rel="noopener">Claude Code</a>, <a href="https://railway.com?referralCode=whqqE9" target="_blank" rel="noopener">Railway</a>, and the <a href="https://developer.foursquare.com" target="_blank" rel="noopener">Foursquare API</a></p>
             <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">Your data is processed temporarily and never stored.</p>
 

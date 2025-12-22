@@ -23,32 +23,32 @@
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg-primary: #fffcf0;
-            --bg-secondary: #f5f2e6;
-            --accent: #CB6120;
-            --accent-hover: #a85019;
-            --text-primary: #100f0f;
-            --text-secondary: #57534e;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f7f7;
+            --accent: #0cbadf;
+            --accent-hover: #0aa5c7;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-primary: #100f0f;
-                --bg-secondary: #1a1918;
-                --accent: #da702c;
-                --accent-hover: #e8883a;
-                --text-primary: #fffcf0;
-                --text-secondary: #a8a29e;
+                --bg-primary: #1a1a1a;
+                --bg-secondary: #252525;
+                --accent: #0cbadf;
+                --accent-hover: #3dc9e8;
+                --text-primary: #ffffff;
+                --text-secondary: #b0b0b0;
             }
         }
 
         body {
-            font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
@@ -64,9 +64,11 @@
 
         h1 {
             font-size: 3rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--accent);
             margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
@@ -122,7 +124,7 @@
         }
 
         .feature-emoji { font-size: 2rem; margin-bottom: 0.5rem; }
-        .feature-title { font-weight: 500; margin-bottom: 0.25rem; }
+        .feature-title { font-weight: 700; margin-bottom: 0.25rem; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
         .feature-desc { font-size: 0.9rem; color: var(--text-secondary); }
 
         footer {
@@ -191,7 +193,7 @@
     </div>
 
     <footer>
-        <p>Made with ❤️ in ATX by <a href="https://alexpriest.com" target="_blank" rel="noopener">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest" target="_blank" rel="noopener">Buy me a coffee ☕</a> · <span style="color: var(--text-secondary);">v1.5.0</span></p>
+        <p>Made with ❤️ in ATX by <a href="https://alexpriest.com" target="_blank" rel="noopener">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest" target="_blank" rel="noopener">Buy me a coffee ☕</a> · <span style="color: var(--text-secondary);">v1.6.0</span></p>
         <p style="margin-top: 0.5rem; font-size: 0.8rem;">Built with <a href="https://claude.com/product/claude-code" target="_blank" rel="noopener">Claude Code</a>, <a href="https://railway.com?referralCode=whqqE9" target="_blank" rel="noopener">Railway</a>, and the <a href="https://developer.foursquare.com" target="_blank" rel="noopener">Foursquare API</a></p>
         <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; max-width: 500px; text-align: left;">
             <p style="font-weight: 500; margin-bottom: 0.5rem;">🔒 Privacy</p>
