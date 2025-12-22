@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% if username %}{{ username }}'s{% else %}Your{% endif %} Swarm 2025 Wrapped</title>
+    <meta name="description" content="See your 2025 in check-ins. Generate your personalized Swarm year in review.">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Swarm Wrapped 2025">
+    <meta property="og:description" content="See your 2025 in check-ins. Generate your personalized Swarm year in review.">
+    <meta property="og:image" content="https://swarm.alxprst.co/static/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://swarm.alxprst.co">
+
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -408,66 +419,6 @@
             }
         }
 
-        /* Stories export card (9:16 vertical) */
-        .export-card-story {
-            width: 450px;
-            height: 800px;
-            padding: 2rem;
-            background: linear-gradient(135deg, #fffcf0 0%, #f5f2e6 100%);
-            border-radius: 24px;
-            font-family: 'Work Sans', sans-serif;
-            position: absolute;
-            left: -9999px;
-            top: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .export-card-story .export-card-header {
-            text-align: center;
-            margin-bottom: 1.25rem;
-        }
-
-        .export-card-story .export-card-logo { font-size: 2.5rem; margin-bottom: 0.25rem; }
-        .export-card-story .export-card-title { font-size: 1.5rem; }
-        .export-card-story .export-card-subtitle { font-size: 0.8rem; }
-
-        .export-card-story .export-card-personality {
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .export-card-story .export-card-personality-emoji { font-size: 2rem; }
-        .export-card-story .export-card-personality-name { font-size: 1rem; }
-
-        .export-card-story .export-card-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .export-card-story .export-card-stat {
-            padding: 0.75rem;
-        }
-
-        .export-card-story .export-card-stat-value { font-size: 1.25rem; }
-        .export-card-story .export-card-stat-label { font-size: 0.65rem; }
-
-        .export-card-story .export-card-map {
-            flex: 1;
-            min-height: 200px;
-            margin-bottom: 1rem;
-        }
-
-        .export-card-story .export-card-footer { font-size: 0.75rem; }
-
-        @media (prefers-color-scheme: dark) {
-            .export-card-story {
-                background: linear-gradient(135deg, #100f0f 0%, #1a1918 100%);
-            }
-        }
-
         /* Share card (map-focused for social sharing) */
         .share-card {
             width: 600px;
@@ -785,12 +736,6 @@
                         </svg>
                         Download Image
                     </button>
-                    <button class="action-btn action-btn-secondary" onclick="previewAndDownload('story')">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                        Download for Stories
-                    </button>
                     <button class="action-btn action-btn-secondary" onclick="previewAndDownload('map')">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -811,7 +756,7 @@
                     </button>
                     <button class="action-btn action-btn-secondary" onclick="shareToThreads()">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/0/01/Threads_%28app%29.svg" alt="Threads" style="width: 18px; height: 18px; filter: var(--threads-icon-filter, none);">
-                        Share on Threads
+                        Share to Threads
                     </button>
                 </div>
             </div>
@@ -867,55 +812,6 @@
             </div>
         </div>
 
-        <!-- Hidden Stories Export Card (9:16 vertical) -->
-        <div class="export-card-story" id="export-card-story">
-            <div class="export-card-header">
-                <div class="export-card-logo">📍</div>
-                <div class="export-card-title">Swarm 2025 Wrapped</div>
-                <div class="export-card-subtitle">My year in check-ins</div>
-            </div>
-
-            {% if stats.personality %}
-            <div class="export-card-personality">
-                <div class="export-card-personality-emoji">{{ stats.personality.emoji }}</div>
-                <div class="export-card-personality-name">{{ stats.personality.name }}</div>
-            </div>
-            {% endif %}
-
-            <div class="export-card-stats">
-                <div class="export-card-stat">
-                    <div class="export-card-stat-value">{{ stats.total_checkins }}</div>
-                    <div class="export-card-stat-label">check-ins</div>
-                </div>
-                <div class="export-card-stat">
-                    <div class="export-card-stat-value">{{ stats.unique_venues }}</div>
-                    <div class="export-card-stat-label">venues</div>
-                </div>
-                <div class="export-card-stat">
-                    <div class="export-card-stat-value">{{ stats.unique_cities }}</div>
-                    <div class="export-card-stat-label">cities</div>
-                </div>
-                <div class="export-card-stat">
-                    <div class="export-card-stat-value">{{ stats.countries|length }}</div>
-                    <div class="export-card-stat-label">countries</div>
-                </div>
-                <div class="export-card-stat">
-                    <div class="export-card-stat-value">{{ stats.longest_streak }}</div>
-                    <div class="export-card-stat-label">day streak</div>
-                </div>
-                <div class="export-card-stat">
-                    <div class="export-card-stat-value">{{ stats.days_active }}</div>
-                    <div class="export-card-stat-label">days active</div>
-                </div>
-            </div>
-
-            <div class="export-card-map" id="export-card-story-map"></div>
-
-            <div class="export-card-footer">
-                Generate yours at <span class="export-card-url">swarm.alxprst.co</span>
-            </div>
-        </div>
-
         <!-- Hidden Share Card (map-focused for social sharing) -->
         <div class="share-card" id="share-card">
             <div class="share-card-header">
@@ -952,7 +848,7 @@
         <div class="copy-feedback" id="copy-feedback">Copied to clipboard!</div>
 
         <footer>
-            <p>Made with ❤️ in ATX by <a href="https://alexpriest.com">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest">Buy me a coffee ☕</a> · <span style="color: var(--text-muted);">v1.4.6</span></p>
+            <p>Made with ❤️ in ATX by <a href="https://alexpriest.com">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest">Buy me a coffee ☕</a> · <span style="color: var(--text-muted);">v1.4.7</span></p>
             <p style="margin-top: 0.5rem;">Your data is processed temporarily and never stored.</p>
 
             <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
@@ -1212,72 +1108,6 @@
             return cardCanvas;
         }
 
-        // Capture stories card (9:16 vertical)
-        async function captureStoryCard() {
-            const card = document.getElementById('export-card-story');
-            const exportMapContainer = document.getElementById('export-card-story-map');
-
-            // Insert map into card with proper aspect ratio
-            const mapCanvas = await captureMap();
-            const mapAspect = mapCanvas.width / mapCanvas.height;
-
-            exportMapContainer.innerHTML = '';
-            exportMapContainer.style.position = 'relative';
-
-            const mapImg = document.createElement('img');
-            mapImg.src = mapCanvas.toDataURL('image/png');
-
-            // Calculate dimensions to cover container while maintaining aspect ratio
-            // Story card is 450px wide with 2rem (32px) padding on each side = 386px inner
-            const containerWidth = 450 - 64;
-            const containerHeight = exportMapContainer.offsetHeight || 300;
-            const containerAspect = containerWidth / containerHeight;
-
-            if (mapAspect > containerAspect) {
-                // Map is wider - fit height, overflow width
-                mapImg.style.height = '100%';
-                mapImg.style.width = 'auto';
-            } else {
-                // Map is taller - fit width, overflow height
-                mapImg.style.width = '100%';
-                mapImg.style.height = 'auto';
-            }
-
-            mapImg.style.position = 'absolute';
-            mapImg.style.top = '50%';
-            mapImg.style.left = '50%';
-            mapImg.style.transform = 'translate(-50%, -50%)';
-            exportMapContainer.appendChild(mapImg);
-
-            // Position card for capture
-            card.style.position = 'fixed';
-            card.style.left = '0';
-            card.style.top = '0';
-            card.style.opacity = '0';
-            card.style.pointerEvents = 'none';
-
-            await new Promise(r => setTimeout(r, 100));
-
-            const cardCanvas = await html2canvas(card, {
-                scale: 2,
-                backgroundColor: exportBgColor,
-                logging: false,
-                useCORS: true,
-                onclone: (clonedDoc) => {
-                    const clonedCard = clonedDoc.getElementById('export-card-story');
-                    if (clonedCard) clonedCard.style.opacity = '1';
-                }
-            });
-
-            // Reset card
-            card.style.position = 'absolute';
-            card.style.left = '-9999px';
-            card.style.opacity = '';
-            card.style.pointerEvents = '';
-
-            return cardCanvas;
-        }
-
         // Preview and download handler
         async function previewAndDownload(type) {
             showFeedback('Generating preview...');
@@ -1288,9 +1118,6 @@
                 if (type === 'card') {
                     canvas = await captureCard();
                     filename = filePrefix + '.png';
-                } else if (type === 'story') {
-                    canvas = await captureStoryCard();
-                    filename = filePrefix + '-story.png';
                 } else if (type === 'map') {
                     canvas = await captureShareCard();
                     filename = filePrefix + '-map.png';
