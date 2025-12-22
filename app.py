@@ -64,7 +64,7 @@ FOURSQUARE_TOKEN_URL = "https://foursquare.com/oauth2/access_token"
 FOURSQUARE_API_BASE = "https://api.foursquare.com/v2"
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health():
     """Health check endpoint for uptime monitoring."""
     return {"status": "ok"}
