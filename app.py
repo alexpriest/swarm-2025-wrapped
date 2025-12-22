@@ -165,12 +165,30 @@ async def api_generate(request: Request):
 
 
 @app.get("/wrapped", response_class=HTMLResponse)
-async def wrapped(request: Request, exclude_sensitive: bool = False):
+async def wrapped(
+    request: Request,
+    exclude_sensitive: bool = False,
+    exclude_religious: bool = False,
+    exclude_schools: bool = False,
+    exclude_residential: bool = False,
+    exclude_medical: bool = False
+):
     """Display the generated wrapped report."""
     token = request.session.get("access_token")
 
     if not token:
         return RedirectResponse(url="/login")
+
+    # Build list of filters to exclude
+    exclude_filters = []
+    if exclude_religious:
+        exclude_filters.append("religious")
+    if exclude_schools:
+        exclude_filters.append("schools")
+    if exclude_residential:
+        exclude_filters.append("residential")
+    if exclude_medical:
+        exclude_filters.append("medical")
 
     try:
         # Fetch user profile and check-ins
@@ -183,7 +201,11 @@ async def wrapped(request: Request, exclude_sensitive: bool = False):
                 "error": "No check-ins found for 2025"
             })
 
-        stats = analyze_checkins(checkins_2025, exclude_sensitive=exclude_sensitive)
+        # Use new granular filters if any are set, otherwise fall back to legacy
+        if exclude_filters:
+            stats = analyze_checkins(checkins_2025, exclude_filters=exclude_filters)
+        else:
+            stats = analyze_checkins(checkins_2025, exclude_sensitive=exclude_sensitive)
 
         # Get lifetime checkin count from user profile (fast - no extra API calls)
         lifetime_checkins = None
@@ -202,6 +224,10 @@ async def wrapped(request: Request, exclude_sensitive: bool = False):
             "stats": stats,
             "lifetime_checkins": lifetime_checkins,
             "exclude_sensitive": exclude_sensitive,
+            "exclude_religious": exclude_religious,
+            "exclude_schools": exclude_schools,
+            "exclude_residential": exclude_residential,
+            "exclude_medical": exclude_medical,
             "username": username
         })
 

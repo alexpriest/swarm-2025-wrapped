@@ -543,12 +543,14 @@
             border-radius: 50px;
             font-size: 0.9rem;
             opacity: 0;
+            pointer-events: none;
             transition: opacity 0.3s;
             z-index: 1000;
         }
 
         .copy-feedback.show {
             opacity: 1;
+            pointer-events: auto;
         }
     </style>
 </head>
@@ -600,14 +602,15 @@
         <!-- Your Type -->
         {% if stats.personality %}
         <div class="section" style="text-align: center;">
-            <h2>Your Swarm personality: {{ stats.personality.name }} {{ stats.personality.emoji }}</h2>
-            <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">{{ stats.personality.description }}</p>
+            <div style="font-size: 4rem; margin-bottom: 1rem;">{{ stats.personality.emoji }}</div>
+            <h2>Your Swarm Personality: {{ stats.personality.name }}</h2>
+            <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">{{ stats.personality.description }}</p>
         </div>
         {% endif %}
 
         <!-- Streak & Lifetime -->
         <div class="section">
-            <h2>🔥 Streaks & milestones</h2>
+            <h2>Streaks & Milestones</h2>
             <div class="streak-grid">
                 <div class="streak-highlight">
                     <div class="streak-number">{{ stats.longest_streak }}</div>
@@ -624,7 +627,7 @@
 
         <!-- Top Venues -->
         <div class="section">
-            <h2>🏆 Your top venues</h2>
+            <h2>Your Top Venues</h2>
             <div class="venue-list">
                 {% for venue in stats.top_venues[:5] %}
                 <div class="venue-item">
@@ -641,7 +644,7 @@
 
         <!-- Top Categories -->
         <div class="section">
-            <h2>📂 Top categories</h2>
+            <h2>Top Categories</h2>
             <div class="chart-container">
                 <canvas id="categoryChart"></canvas>
             </div>
@@ -649,7 +652,7 @@
 
         <!-- Your Swarm Chronotype -->
         <div class="section">
-            <h2>⏰ Your Swarm chronotype</h2>
+            <h2>Your Swarm Chronotype</h2>
             <div style="text-align: center; margin-bottom: 1rem;">
                 <p style="color: var(--text-secondary);">Based on when you check in most often, you're an <strong style="color: var(--accent);">{{ stats.time_personality }}</strong>.</p>
             </div>
@@ -661,7 +664,7 @@
         <!-- Top Friends -->
         {% if stats.top_friends %}
         <div class="section">
-            <h2>👥 Your check-in crew</h2>
+            <h2>Your Check-in Crew</h2>
             <p style="color: var(--text-secondary); margin-bottom: 1rem;">You checked in with friends {{ stats.friend_percentage }}% of the time</p>
             <div class="friend-list">
                 {% for friend in stats.top_friends %}
@@ -676,7 +679,7 @@
 
         <!-- Insights -->
         <div class="section">
-            <h2>✨ Insights and highlights</h2>
+            <h2>Insights & Highlights</h2>
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                 {% if stats.first_checkin %}
                 <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 1rem;">
@@ -731,7 +734,7 @@
 
         <!-- Map -->
         <div class="section">
-            <h2>🗺️ Your year on the map</h2>
+            <h2>Your Year on the Map</h2>
             <div class="map-container">
                 <div id="map"></div>
             </div>
@@ -739,7 +742,7 @@
 
         <!-- Export Section -->
         <div class="section" style="text-align: center;">
-            <h2>📤 Save & share your wrapped</h2>
+            <h2>Save & Share Your Wrapped</h2>
 
             <div style="margin-bottom: 1.5rem;">
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">Download</p>
@@ -862,23 +865,53 @@
         <div class="copy-feedback" id="copy-feedback">Copied to clipboard!</div>
 
         <footer>
-            <p>Made with ❤️ in ATX by <a href="https://alexpriest.com" target="_blank" rel="noopener">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest" target="_blank" rel="noopener">Buy me a coffee ☕</a> · <span style="color: var(--text-muted);">v1.6.0</span></p>
+            <p>Made with ❤️ in ATX by <a href="https://alexpriest.com" target="_blank" rel="noopener">Alex Priest</a> · <a href="https://buymeacoffee.com/alexpriest" target="_blank" rel="noopener">Buy me a coffee ☕</a> · <span style="color: var(--text-muted);">v1.7.6</span></p>
             <p style="margin-top: 0.5rem;">Built with <a href="https://claude.com/product/claude-code" target="_blank" rel="noopener">Claude Code</a>, <a href="https://railway.com?referralCode=whqqE9" target="_blank" rel="noopener">Railway</a>, and the <a href="https://developer.foursquare.com" target="_blank" rel="noopener">Foursquare API</a></p>
             <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">Your data is processed temporarily and never stored.</p>
 
-            <div style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
-                <div style="padding: 0.75rem 1rem; background: var(--bg-secondary); border-radius: 8px;">
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem;">
-                        <input type="checkbox" id="privacy-toggle" {% if exclude_sensitive %}checked{% endif %} style="width: 16px; height: 16px; accent-color: var(--accent);">
-                        <span>Exclude churches & schools</span>
+            <div style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; text-align: center;">
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">Privacy filters</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;">
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                        <input type="checkbox" class="privacy-filter" data-filter="exclude_religious" {% if exclude_religious %}checked{% endif %} style="width: 14px; height: 14px; accent-color: var(--accent);">
+                        <span>Religious</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                        <input type="checkbox" class="privacy-filter" data-filter="exclude_schools" {% if exclude_schools %}checked{% endif %} style="width: 14px; height: 14px; accent-color: var(--accent);">
+                        <span>Schools</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                        <input type="checkbox" class="privacy-filter" data-filter="exclude_residential" {% if exclude_residential %}checked{% endif %} style="width: 14px; height: 14px; accent-color: var(--accent);">
+                        <span>Homes</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.85rem;">
+                        <input type="checkbox" class="privacy-filter" data-filter="exclude_medical" {% if exclude_medical %}checked{% endif %} style="width: 14px; height: 14px; accent-color: var(--accent);">
+                        <span>Medical</span>
                     </label>
                 </div>
-                <a href="/logout" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">← Disconnect & start over</a>
+                <button id="apply-filters-btn" style="display: none; margin-top: 0.75rem; padding: 0.5rem 1rem; background: var(--accent); color: white; border: none; border-radius: 50px; font-size: 0.85rem; font-weight: 500; cursor: pointer; font-family: inherit;">Apply Filters</button>
             </div>
+            <p style="margin-top: 1rem;"><a href="/logout" style="color: var(--text-muted); font-size: 0.85rem;">← Disconnect & start over</a></p>
             <script>
-                document.getElementById('privacy-toggle').addEventListener('change', function() {
-                    window.location.href = this.checked ? '/wrapped?exclude_sensitive=true' : '/wrapped';
+                const applyBtn = document.getElementById('apply-filters-btn');
+                const initialState = Array.from(document.querySelectorAll('.privacy-filter')).map(cb => cb.checked);
+
+                function checkForChanges() {
+                    const currentState = Array.from(document.querySelectorAll('.privacy-filter')).map(cb => cb.checked);
+                    const hasChanges = currentState.some((val, i) => val !== initialState[i]);
+                    applyBtn.style.display = hasChanges ? 'inline-block' : 'none';
+                }
+
+                function applyFilters() {
+                    const checkboxes = document.querySelectorAll('.privacy-filter:checked');
+                    const params = Array.from(checkboxes).map(cb => cb.dataset.filter + '=true');
+                    window.location.href = params.length > 0 ? '/wrapped?' + params.join('&') : '/wrapped';
+                }
+
+                document.querySelectorAll('.privacy-filter').forEach(cb => {
+                    cb.addEventListener('change', checkForChanges);
                 });
+                applyBtn.addEventListener('click', applyFilters);
             </script>
         </footer>
     </div>
@@ -892,11 +925,11 @@
         const filePrefix = username + '-swarm-wrapped-2025';
 
         // Background color for export card capture
-        const exportBgColor = isDarkMode ? '#100f0f' : '#fffcf0';
+        const exportBgColor = isDarkMode ? '#1a1a1a' : '#ffffff';
 
-        // Chart colors based on color scheme
-        const accentColor = isDarkMode ? '#da702c' : '#CB6120';
-        const accentColorAlpha = isDarkMode ? 'rgba(218, 112, 44, 0.1)' : 'rgba(203, 97, 32, 0.1)';
+        // Chart colors based on color scheme (Foursquare blue)
+        const accentColor = '#0cbadf';
+        const accentColorAlpha = isDarkMode ? 'rgba(12, 186, 223, 0.2)' : 'rgba(12, 186, 223, 0.1)';
         const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)';
 
         // Category Chart
@@ -1073,25 +1106,21 @@
             const mapImg = document.createElement('img');
             mapImg.src = mapCanvas.toDataURL('image/png');
 
-            // Calculate dimensions to cover container while maintaining aspect ratio
+            // Dynamic container height based on map aspect ratio
             const containerWidth = 600 - 50; // card width minus padding
-            const containerHeight = 280;
-            const containerAspect = containerWidth / containerHeight;
+            const minHeight = 200;
+            const maxHeight = 350;
 
-            if (mapAspect > containerAspect) {
-                // Map is wider - fit height, overflow width
-                mapImg.style.height = '100%';
-                mapImg.style.width = 'auto';
-            } else {
-                // Map is taller - fit width, overflow height
-                mapImg.style.width = '100%';
-                mapImg.style.height = 'auto';
-            }
+            // Calculate height to maintain map's aspect ratio (no cropping, no bars)
+            let calculatedHeight = containerWidth / mapAspect;
+            calculatedHeight = Math.max(minHeight, Math.min(maxHeight, calculatedHeight));
 
-            mapImg.style.position = 'absolute';
-            mapImg.style.top = '50%';
-            mapImg.style.left = '50%';
-            mapImg.style.transform = 'translate(-50%, -50%)';
+            exportMapContainer.style.height = calculatedHeight + 'px';
+
+            // Map fills container exactly
+            mapImg.style.width = '100%';
+            mapImg.style.height = '100%';
+            mapImg.style.objectFit = 'cover';
             exportMapContainer.appendChild(mapImg);
 
             // Position card for capture
@@ -1184,23 +1213,22 @@
             const mapImg = document.createElement('img');
             mapImg.src = mapCanvas.toDataURL('image/png');
 
-            // Share card is 600px wide with 2rem (32px) padding = 536px inner, map is 400px tall
+            // Share card is 600px wide with 2rem (32px) padding = 536px inner
+            // Dynamic container height based on map aspect ratio
             const containerWidth = 536;
-            const containerHeight = 400;
-            const containerAspect = containerWidth / containerHeight;
+            const minHeight = 300;
+            const maxHeight = 500;
 
-            if (mapAspect > containerAspect) {
-                mapImg.style.height = '100%';
-                mapImg.style.width = 'auto';
-            } else {
-                mapImg.style.width = '100%';
-                mapImg.style.height = 'auto';
-            }
+            // Calculate height to maintain map's aspect ratio (no cropping, no bars)
+            let calculatedHeight = containerWidth / mapAspect;
+            calculatedHeight = Math.max(minHeight, Math.min(maxHeight, calculatedHeight));
 
-            mapImg.style.position = 'absolute';
-            mapImg.style.top = '50%';
-            mapImg.style.left = '50%';
-            mapImg.style.transform = 'translate(-50%, -50%)';
+            exportMapContainer.style.height = calculatedHeight + 'px';
+
+            // Map fills container exactly
+            mapImg.style.width = '100%';
+            mapImg.style.height = '100%';
+            mapImg.style.objectFit = 'cover';
             exportMapContainer.appendChild(mapImg);
 
             // Position card for capture

@@ -83,12 +83,30 @@ PERSONALITY_TYPES = {
 }
 
 
-# Categories to exclude when privacy filter is enabled
-SENSITIVE_CATEGORIES = [
-    "church", "cathedral", "mosque", "synagogue", "temple", "chapel",
-    "spiritual center", "religious", "school", "elementary", "middle school",
-    "high school", "preschool", "daycare", "nursery", "kindergarten"
-]
+# Categories to exclude when privacy filters are enabled
+FILTER_CATEGORIES = {
+    "religious": [
+        "church", "cathedral", "mosque", "synagogue", "temple", "chapel",
+        "spiritual center", "religious", "monastery", "shrine"
+    ],
+    "schools": [
+        "school", "elementary", "middle school", "high school", "preschool",
+        "daycare", "nursery", "kindergarten", "university", "college",
+        "academy", "education"
+    ],
+    "residential": [
+        "home", "house", "apartment", "condo", "condominium", "residence",
+        "residential", "private", "housing"
+    ],
+    "medical": [
+        "hospital", "doctor", "clinic", "medical", "dentist", "dental",
+        "physician", "health center", "urgent care", "emergency room",
+        "pharmacy", "therapist", "psychiatrist", "optometrist"
+    ]
+}
+
+# Legacy support - combined list for backward compatibility
+SENSITIVE_CATEGORIES = FILTER_CATEGORIES["religious"] + FILTER_CATEGORIES["schools"]
 
 
 def ordinal(n: int) -> str:
@@ -105,13 +123,14 @@ def format_date_ordinal(dt: datetime) -> str:
     return f"{dt.strftime('%B')} {ordinal(dt.day)}"
 
 
-def analyze_checkins(checkins: list, exclude_sensitive: bool = False) -> dict:
+def analyze_checkins(checkins: list, exclude_sensitive: bool = False, exclude_filters: list = None) -> dict:
     """
     Analyze a list of Foursquare check-ins and return statistics.
 
     Args:
         checkins: List of check-in objects from Foursquare API
-        exclude_sensitive: If True, exclude churches and schools for privacy
+        exclude_sensitive: If True, exclude churches and schools for privacy (legacy)
+        exclude_filters: List of filter types to exclude: "religious", "schools", "residential", "medical"
 
     Returns:
         Dictionary with all computed statistics
@@ -119,8 +138,20 @@ def analyze_checkins(checkins: list, exclude_sensitive: bool = False) -> dict:
     if not checkins:
         return {}
 
-    # Filter out sensitive venues if requested
-    if exclude_sensitive:
+    # Build list of categories to exclude
+    categories_to_exclude = []
+
+    # Handle new granular filters
+    if exclude_filters:
+        for filter_type in exclude_filters:
+            if filter_type in FILTER_CATEGORIES:
+                categories_to_exclude.extend(FILTER_CATEGORIES[filter_type])
+    # Legacy support for exclude_sensitive boolean
+    elif exclude_sensitive:
+        categories_to_exclude = SENSITIVE_CATEGORIES
+
+    # Filter out venues if any exclusions are requested
+    if categories_to_exclude:
         filtered_checkins = []
         for checkin in checkins:
             venue = checkin.get("venue", {})
@@ -128,17 +159,17 @@ def analyze_checkins(checkins: list, exclude_sensitive: bool = False) -> dict:
             categories = venue.get("categories", [])
             category_names = [cat.get("name", "").lower() for cat in categories]
 
-            # Check if any category matches sensitive categories
-            is_sensitive = any(
-                any(sensitive in cat_name for sensitive in SENSITIVE_CATEGORIES)
+            # Check if any category matches excluded categories
+            is_excluded = any(
+                any(excluded in cat_name for excluded in categories_to_exclude)
                 for cat_name in category_names
             )
 
-            # Also check venue name for sensitive keywords
-            if not is_sensitive:
-                is_sensitive = any(sensitive in venue_name for sensitive in SENSITIVE_CATEGORIES)
+            # Also check venue name for excluded keywords
+            if not is_excluded:
+                is_excluded = any(excluded in venue_name for excluded in categories_to_exclude)
 
-            if not is_sensitive:
+            if not is_excluded:
                 filtered_checkins.append(checkin)
 
         checkins = filtered_checkins
