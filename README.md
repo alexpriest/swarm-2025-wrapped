@@ -41,8 +41,8 @@ Generate your own Spotify Wrapped-style report from your Foursquare Swarm check-
 
 ```bash
 # Clone the repo
-git clone https://github.com/alexpriest/swarm-wrapped-app.git
-cd swarm-wrapped-app
+git clone https://github.com/alexpriest/swarm-2025-wrapped.git
+cd swarm-2025-wrapped
 
 # Create virtual environment
 python3 -m venv venv
@@ -68,7 +68,7 @@ Visit `http://localhost:8000` and connect your Swarm account!
 
 1. Go to [railway.app](https://railway.app) and sign in with GitHub
 2. Click **New Project** → **Deploy from GitHub repo**
-3. Select `alexpriest/swarm-wrapped-app`
+3. Select `alexpriest/swarm-2025-wrapped`
 4. Once deployed, go to your project's **Variables** tab and add:
    - `FOURSQUARE_CLIENT_ID` = your client ID
    - `FOURSQUARE_CLIENT_SECRET` = your client secret
